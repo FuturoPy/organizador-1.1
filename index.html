@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Organizador — Drive + PDF + IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#141416;--bg2:#222226;--ink:#fff;--mute:#c8c8cc;--ac:#ff5a1f;--ac2:#ffb020;--line:rgba(255,255,255,.14)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:'Outfit',system-ui,sans-serif}a{color:inherit}button{font-family:inherit}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:18px;z-index:80}.ov.on{display:flex}
+.mo{background:#fff;color:#111;max-width:520px;width:100%;max-height:90vh;overflow:auto;padding:26px;border-radius:12px}
+.mo h2{margin:0 0 16px;font-size:1.4rem}.mo label{display:block;font-size:.76rem;font-weight:700;color:#555;margin:12px 0 5px}
+.mo input{width:100%;font:inherit;font-size:.92rem;padding:10px;border:1px solid #ccc;border-radius:6px}
+.mo .it{padding:8px;cursor:pointer;border-radius:6px}.mo .it:hover{background:#eee}.mo .mu{color:#777}
+.ma{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.ma button{padding:10px 18px;border:0;border-radius:6px;font-weight:700;cursor:pointer;background:#eee}.ma .p{background:var(--ac);color:#fff}
+.hint{font-size:.78rem;color:#777;margin-top:8px}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111;border:1px solid var(--ac);padding:10px 20px;border-radius:8px;z-index:99;font-size:.88rem;opacity:0;pointer-events:none;transition:.3s}.toast.on{opacity:1}
+/* Drive + PDF */
+.dv{position:fixed;inset:0;z-index:70;background:var(--bg);overflow:auto;display:none}.dv.on{display:block}
+.dh{display:flex;align-items:center;gap:12px;padding:14px 20px;background:#0e0e10;border-bottom:2px solid var(--ac);flex-wrap:wrap;position:sticky;top:0;z-index:2}.dh b{font-size:1.2rem;font-weight:800;flex:1}.dh b i{color:var(--ac);font-style:normal}
+.dv button,.dv .bt{background:#2a2a2e;border:1px solid var(--line);color:#fff;padding:9px 14px;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;text-decoration:none;display:inline-block}
+.dv button:hover,.dv .bt:hover{border-color:var(--ac)}.dv button:disabled{opacity:.4;cursor:not-allowed}.dv .p{background:var(--ac);border-color:var(--ac)}
+.dv .lk{background:none;border:0;color:var(--ac2);padding:0;font:inherit}.lk{background:none;border:0;color:var(--ac);cursor:pointer;font:inherit;padding:0}
+.bd{font-size:.78rem;color:var(--mute)}.bd.on{color:#22c55e}
+.dtb{display:flex;gap:4px;padding:0 20px;background:#0e0e10;overflow-x:auto}.dv .dtb button{background:none;border:0;border-bottom:3px solid transparent;border-radius:0;color:var(--mute)}.dv .dtb button.on{color:#fff;border-color:var(--ac)}
+.dm{max-width:1100px;margin:0 auto;padding:20px}.dview{display:none}.dview.on{display:block}
+.dc{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px}.dc h3{margin:0 0 6px}.mu{color:var(--mute);font-size:.85rem;line-height:1.5}
+.dr{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:12px}.dr>div{flex:1;min-width:110px}
+.dv label{display:block;font-size:.76rem;font-weight:700;margin:0 0 5px}
+.dv input:not([type=checkbox]),.dv select{width:100%;background:#2a2a2e;border:1px solid var(--line);color:#fff;padding:10px;border-radius:8px;font:inherit}
+.dp{display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start}
+.dtree{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px;max-height:65vh;overflow:auto}
+.it{padding:8px 10px;border-radius:6px;cursor:pointer;font-size:.86rem}.dtree .it:hover{background:#2a2a2e}
+.fb{background:var(--bg2);border:1px solid var(--line);border-radius:10px;min-height:260px}
+.fr{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:.88rem}.fr .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fr a{color:var(--ac2);font-size:.8rem}
+.res{display:none;margin-top:14px;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);padding:12px;border-radius:8px}.res.on{display:flex}.res code{flex:1;min-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#000;padding:6px 10px;border-radius:6px;font-size:.8rem}
+iframe.pf{width:100%;height:65vh;border:1px solid var(--line);border-radius:10px;background:#fff}
+.rb{background:var(--bg2);border:1px solid var(--line);border-radius:10px 10px 0 0}
+.rt{display:flex;gap:2px;padding:6px 10px 0;border-bottom:1px solid var(--line)}.dv .rt button{background:none;border:0;border-radius:6px 6px 0 0;color:var(--mute)}.dv .rt button.on{background:#2f2f34;color:#fff}
+.rp{display:none;gap:8px;padding:10px;flex-wrap:wrap;align-items:center;background:#2f2f34}.rp.on{display:flex}.rp .sp{width:1px;height:26px;background:var(--line)}
+.dv button.on{border-color:var(--ac);background:rgba(255,90,31,.25)}.dv input[type=color]{width:44px;height:36px;padding:2px}
+.edw{display:flex;height:calc(100vh - 330px);min-height:360px;border:1px solid var(--line);border-top:0}
+.thm{width:130px;overflow:auto;background:#1b1b1e;padding:10px;display:flex;flex-direction:column;gap:12px;align-items:center;flex:none}
+.tn{cursor:pointer;text-align:center;font-size:.72rem;color:var(--mute);border:2px solid transparent;padding:3px;border-radius:4px}.tn.on{border-color:var(--ac)}.tn canvas{display:block;background:#fff;max-width:100px}
+.pgs{flex:1;overflow:auto;background:#3b3b40;padding:18px;position:relative}.pgs.adt{cursor:crosshair}
+.pgw{position:relative;margin:0 auto 18px;background:#fff;box-shadow:0 4px 18px rgba(0,0,0,.5)}.pgw canvas{width:100%;height:100%;display:block}
+.tl,.po{position:absolute;inset:0;pointer-events:none}.ti{position:absolute;display:none}.em .ti{display:block;pointer-events:auto;cursor:text;outline:1px dashed rgba(74,158,255,.8)}.em .ti:hover{background:rgba(74,158,255,.25)}
+.ob{position:absolute;pointer-events:auto;line-height:1.2}.ob.txt{white-space:pre}.ob .tx{outline:none;min-width:1em;cursor:text}.ob.txt:hover{outline:1px dashed rgba(74,158,255,.6)}.ob.sl{outline:1px dashed #4a9eff}
+.ob .hd{position:absolute;left:-1px;top:-18px;font:400 12px/1 sans-serif;font-style:normal;background:#4a9eff;color:#fff;padding:3px 5px;border-radius:4px 4px 0 0;cursor:move;display:none}.ob.sl .hd{display:block}
+.ob.img img{width:100%;height:100%;display:block;pointer-events:none;user-select:none}.ob.img,.ob.rect{cursor:move}
+.ob .rz{position:absolute;right:-6px;bottom:-6px;width:12px;height:12px;background:#4a9eff;border-radius:50%;cursor:nwse-resize;display:none}.ob.sl .rz{display:block}
+.stb{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:6px 12px;background:#0e0e10;border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;font-size:.8rem;color:var(--mute)}
+/* ===== v3: faixa estilo Word, assistente lateral, correções ===== */
+.rb{background:#f3f3f3;border:1px solid #c9c9c9;border-radius:10px 10px 0 0;overflow:hidden;flex:none}
+.rt{display:flex;gap:2px;padding:6px 10px 0;background:#2b579a;border:0}
+.dv .rt button{background:none;border:0;border-radius:6px 6px 0 0;color:#fff;padding:8px 18px}.dv .rt button:hover{background:rgba(255,255,255,.16)}.dv .rt button.on{background:#f3f3f3;color:#1f1f1f}
+.rp{display:none;color:#222;padding:8px 6px;gap:0;align-items:stretch;min-height:92px;background:#f3f3f3;border-bottom:1px solid #d6d6d6}.rp.on{display:flex;flex-wrap:wrap}
+.gp{display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:0 12px;border-right:1px solid #d6d6d6}
+.gr{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:center}.gl{font-size:.68rem;color:#666;margin-top:6px}
+.dv .rp button,.dv .rp .bt{background:#fff;color:#222;border:1px solid #cfcfcf;border-radius:4px;padding:7px 10px;font-size:.82rem}
+.dv .rp button:hover,.dv .rp .bt:hover{background:#e6eefb;border-color:#2b579a}.dv .rp button.on{background:#cfe0f8;border-color:#2b579a}.dv .rp button.p{background:#2b579a;color:#fff;border-color:#2b579a}
+.dv .rp input:not([type=checkbox]),.dv .rp select{background:#fff;color:#222;border:1px solid #cfcfcf;border-radius:4px;padding:6px 8px}
+.dv .rp input[type=color]{width:38px;height:32px;padding:2px}.dv .rp #fF{width:160px}.dv .rp #fZ{width:62px}.rp .mu{color:#666;align-self:center;padding:0 12px;max-width:260px}
+#d-p.on{display:flex;flex-direction:column;height:calc(100vh - 150px);min-height:440px}
+.edw{display:flex;flex:1;min-height:0;height:auto;border:1px solid #c9c9c9;border-top:0}.dv .stb button{padding:2px 9px}
+.em .ti{display:block;pointer-events:auto;cursor:text;outline:0}.em .ti:hover{outline:1px dashed #4a9eff;background:rgba(74,158,255,.18)}
+.ai{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:75;display:none;flex-direction:column;background:#17171a;border-left:1px solid var(--line);box-shadow:-10px 0 40px rgba(0,0,0,.5)}.dv.aio .ai{display:flex}
+@media(min-width:900px){.dv.aio{padding-right:400px}}
+.ai-top{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}.ai-top .mu{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.75rem}
+.ai-sc{flex:1;overflow:auto;padding:16px}.ai-w{padding:3vh 0 14px;text-align:center}.ai-w h2{font-size:1.5rem;margin:0 0 8px;font-weight:800}.ai-w p{color:var(--mute);font-size:.88rem;margin:0 0 16px}
+.ai-c{display:grid;gap:8px}.dv .ai-c button{background:var(--bg2);border-radius:12px;padding:12px 14px;text-align:left;font-weight:500}
+.ai-m{display:flex;flex-direction:column;gap:14px}.ai-b{font-size:.93rem;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.ai-b.u{align-self:flex-end;max-width:85%;background:var(--bg2);border:1px solid var(--line);padding:9px 14px;border-radius:16px}
+.ai-b.t{align-self:flex-start;font-size:.76rem;color:var(--ac2);background:rgba(255,176,32,.1);padding:3px 11px;border-radius:20px}
+.ai-bar{padding:10px 14px 14px;border-top:1px solid var(--line)}.ai-in{display:flex;gap:8px;align-items:flex-end;background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:8px 8px 8px 14px}.ai-in:focus-within{border-color:var(--ac)}
+.ai-in textarea{flex:1;resize:none;min-height:40px;max-height:160px;border:0;outline:0;background:none;color:#fff;font:inherit;line-height:1.5}
+.dv .ai-in button{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#111;border:0;border-radius:14px;font-weight:700}
+.dm{max-width:1400px}
+@media(max-width:820px){.dp{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<!-- Painel Drive + PDF (só abre no modo edição) -->
+<div class="dv on" id="dv">
+ <div class="dh"><b>Organizador<i>.</i>Drive</b><span class="bd" id="bd">● Desconectado</span><button id="dAuth">Conectar com Google</button><button id="aiTg" class="p">✨ Assistente</button></div>
+ <aside class="ai" id="ai"><div class="ai-top"><b>✨ Assistente</b><span class="mu" id="aiSt"></span><button id="aiN" title="Nova conversa">↺</button><button id="aiX" title="Fechar">✕</button></div>
+ <div class="ai-sc" id="aiSc"><div class="ai-w" id="aiW"><h2>Como posso ajudar?</h2><p>Eu resolvo direto aqui: edito o PDF aberto, organizo o Drive e respondo dúvidas (Wikipédia, contas, cotação). Digite "ajuda" para ver exemplos.</p>
+  <div class="ai-c" id="aiC"><button>Revise este PDF e corrija os erros</button><button>Resuma este PDF</button><button>Crie a pasta de um cliente novo</button><button>Numere as páginas deste PDF</button></div></div><div class="ai-m" id="aiM"></div></div>
+ <div class="ai-bar"><div class="ai-in"><textarea id="aiI" rows="1" placeholder="Peça o que precisa…"></textarea><button id="aiS">Enviar</button></div></div></aside>
+ <div class="dtb" id="dtabs"><button class="on" data-t="r">Organizar rápido</button><button data-t="a">Arquivos</button><button data-t="p">Editar PDF</button><button data-t="c">Configurações</button></div>
+ <div class="dm">
+  <div class="dview on" id="d-r">
+   <div class="dc"><h3>⚡ Criar pasta em 1 clique</h3><p class="mu">Monta <b>Clientes / Cliente / Projeto</b> no seu Drive (reaproveita o que já existe) e gera o link.</p>
+    <div class="dr"><div><label>Cliente</label><input id="wC" placeholder="Ex: Maria Souza"></div><div><label>Projeto</label><input id="wP" placeholder="Ex: Identidade visual"></div><button class="p" id="wGo">Criar / abrir pasta</button></div>
+    <div class="res" id="wOut"><span>📁</span><code id="wL"></code><button id="wCp">Copiar</button><a class="bt" id="wOpen" target="_blank" rel="noopener">Abrir no Drive</a></div></div>
+   <div class="dc"><h3>📥 Pastas recentes</h3><div id="dRec" style="display:flex;flex-direction:column;gap:8px;margin-top:10px"></div></div>
+  </div>
+  <div class="dview" id="d-a">
+   <div class="mu" id="dCr" style="margin-bottom:12px"></div>
+   <div class="dp"><div class="dtree" id="dTree"></div><div>
+    <div class="dr" style="margin:0 0 12px"><button id="dNf">+ Nova pasta</button><button id="dUp">+ Enviar arquivo</button><input type="file" id="dFi" multiple hidden><button id="dMv" disabled>Mover</button><button id="dRn" disabled>Renomear</button><button id="dTr" disabled>Lixeira</button><button id="dRf">↻</button></div>
+    <div class="fb" id="dFiles"><div class="mu" style="padding:40px;text-align:center">Conecte-se ao Google para ver seus arquivos.</div></div></div></div>
+  </div>
+  <div class="dview" id="d-p">
+   <div class="rb" id="rb">
+    <div class="rt" id="rt"><button class="on" data-r="h">Página Inicial</button><button data-r="i">Inserir</button><button data-r="g">Páginas</button><button data-r="a">Arquivo</button></div>
+    <div class="rp on" id="rp-h">
+     <div class="gp"><div class="gr"><button id="uUn" title="Desfazer (Ctrl+Z)">↶ Desfazer</button><button id="uRe" title="Refazer (Ctrl+Y)">↷ Refazer</button></div><span class="gl">Histórico</span></div>
+     <div class="gp"><div class="gr"><select id="fF"><option value="Helvetica">Arial / Helvetica</option><option value="Times">Times New Roman</option><option value="Courier">Courier New</option></select>
+      <input id="fZ" list="fSz" type="number" value="12" min="4" max="200" title="Tamanho"><datalist id="fSz"><option value="8"><option value="10"><option value="12"><option value="14"><option value="18"><option value="24"><option value="36"><option value="48"></datalist><button id="fUp" title="Aumentar">A▲</button><button id="fDn" title="Diminuir">A▼</button></div>
+      <div class="gr" style="margin-top:6px"><button id="fB" title="Negrito (Ctrl+B)"><b>B</b></button><button id="fI" title="Itálico (Ctrl+I)"><i>I</i></button><button id="fU" title="Sublinhado (Ctrl+U)"><u>U</u></button><input id="fC" type="color" value="#000000" title="Cor da fonte"></div><span class="gl">Fonte</span></div>
+     <div class="gp"><div class="gr"><button id="tEd">✎ Editar texto</button><button id="tSel">↖ Selecionar</button><button id="oDel">🗑 Excluir</button></div><span class="gl">Edição</span></div>
+     <div class="gp"><div class="gr"><button id="aiT" class="p">✨ Pedir à IA</button></div><span class="gl">Assistente</span></div>
+     <span class="mu">Clique num texto do PDF para editar, como no Word. Duplo clique num espaço vazio escreve ali.</span></div>
+    <div class="rp" id="rp-i">
+     <div class="gp"><div class="gr"><button id="tTx">T Caixa de texto</button><label class="bt">🖼 Imagem<input type="file" id="iImg" accept="image/*" hidden></label></div><span class="gl">Inserir</span></div>
+     <div class="gp"><div class="gr"><button id="iRc">▭ Retângulo</button><input id="rC" type="color" value="#ffffff" title="Cor do retângulo"></div><span class="gl">Formas</span></div>
+     <span class="mu">Retângulo branco serve de tarja para cobrir trechos.</span></div>
+    <div class="rp" id="rp-g">
+     <div class="gp"><div class="gr"><button id="gRot">↻ Girar</button><button id="gDup">⧉ Duplicar</button><button id="gDel">🗑 Excluir</button></div><span class="gl">Página atual</span></div>
+     <div class="gp"><div class="gr"><button id="gUp">↑ Subir</button><button id="gDn">↓ Descer</button></div><span class="gl">Ordem</span></div>
+     <div class="gp"><div class="gr"><button id="gBl">＋ Em branco</button><label class="bt">➕ Juntar PDF<input type="file" id="pMg" accept="application/pdf" hidden></label></div><span class="gl">Adicionar</span></div></div>
+    <div class="rp" id="rp-a">
+     <div class="gp"><div class="gr"><label class="bt">📂 Abrir PDF<input type="file" id="pOpen" accept="application/pdf" hidden></label></div><span class="gl">Abrir</span></div>
+     <div class="gp"><div class="gr"><button id="pDl" title="Ctrl+S">⬇ Baixar</button><button id="pSv" class="p">Salvar no Drive (substituir)</button><button id="pCp">Salvar cópia na pasta atual</button></div><span class="gl">Salvar</span></div></div>
+   </div>
+   <div class="edw"><div class="thm" id="thm"></div><div class="pgs" id="pgs"><div class="mu" style="padding:40px;text-align:center">Abra um PDF em Arquivo → Abrir PDF, ou use "Editar PDF" na aba Arquivos.</div></div></div>
+   <div class="stb"><span id="pNm">Nenhum PDF aberto</span><span id="pSt"></span><span><button id="zO">−</button> <span id="zV">120%</span> <button id="zI">+</button></span></div>
+  </div>
+  
+  <div class="dview" id="d-c">
+   <div class="dc"><h3>✨ Assistente de IA</h3><p class="mu"><b>Local (padrão):</b> assistente feito do zero que roda no seu navegador, sem chave, sem internet e sem custo. Entende pedidos de PDF, Drive e projetos (digite "ajuda" no chat) e não conversa livremente. <b>Anthropic (opcional):</b> conversa livre e entende qualquer pedido; precisa de uma chave da API (console.anthropic.com) e tem custo por uso. A chave fica só neste navegador; para mais segurança use um proxy seu.</p>
+    <div class="dr"><div><label>Motor</label><select id="aMode"><option value="local">Local (sem chave)</option><option value="api">Anthropic (com chave)</option></select></div></div>
+    <div class="dr"><div style="flex:2"><label>Chave da API</label><input id="aKey" type="password" placeholder="sk-ant-..."></div><div><label>Modelo</label><input id="aMod"></div></div>
+    <div class="dr"><div style="flex:2"><label>URL do proxy (opcional)</label><input id="aUrl" placeholder="https://.../functions/v1/ia"></div></div>
+    <div class="dr"><label style="font-weight:500"><input type="checkbox" id="aWeb"> Permitir pesquisa na web no motor Anthropic (precisa estar habilitada no console da Anthropic)</label></div>
+    <div class="dr"><button class="p" id="aS">Salvar IA</button><button id="aW" style="color:#ff8a70">Apagar chave</button></div></div>
+   
+
+   <div class="dc"><h3>Configurações</h3><p class="mu">O Google exige um Client ID gratuito (uma vez só): <b>1.</b> console.cloud.google.com → criar projeto. <b>2.</b> Ativar a <b>Google Drive API</b>. <b>3.</b> Tela de permissão OAuth → Externo → adicione seu e-mail em "Usuários de teste". <b>4.</b> Credenciais → ID do cliente OAuth → Aplicativo da Web → em "Origens JavaScript autorizadas" coloque o endereço deste site (e http://localhost). <b>5.</b> Cole o ID abaixo.</p>
+    <div class="dr"><div style="flex:2"><label>Client ID do Google</label><input id="cCid" placeholder="000-xxx.apps.googleusercontent.com"></div><div><label>Pasta raiz</label><input id="cRoot"></div></div>
+    <div class="dr"><button class="p" id="cS">Salvar</button><button id="cW" style="color:#ff8a70">Esquecer configuração</button></div></div>
+  </div>
+ </div>
+</div>
+
+<div class="ov" id="ov"><div class="mo" id="mo"></div></div><div class="toast" id="toast"></div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>{const d=document.createElement('div');d.textContent=s||'';return d.innerHTML.replace(/"/g,'&quot;')};
+function toast(t){const x=$('toast');x.textContent=t;x.classList.add('on');setTimeout(()=>x.classList.remove('on'),2600)}
+function modal(h,onSave){$('mo').innerHTML=h+'<div class="ma"><button id="mc">Cancelar</button><button class="p" id="ms">Salvar</button></div>';$('ov').classList.add('on');$('mc').onclick=close;$('ms').onclick=()=>{if(onSave()!==false)close()}}
+function close(){$('ov').classList.remove('on')}
+/* ================= DRIVE + PDF ================= */
+const DK='acervo-drive-cfg',DR='acervo-drive-rec',FM='application/vnd.google-apps.folder';
+let DC={};try{DC=JSON.parse(localStorage.getItem(DK))||{}}catch(e){}
+let tok=null,tc=null,cur='root',path=[{id:'root',name:'Meu Drive'}],cache={},fl=[],sel=new Set(),pT='root',pP=[],pdfB=null,pdfN='',pdfI=null,pvU=null,lastW=null;
+const dsave=()=>{try{localStorage.setItem(DK,JSON.stringify(DC))}catch(e){}};
+function dtab(t){document.querySelectorAll('#dtabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('.dview').forEach(v=>v.classList.toggle('on',v.id==='d-'+t))}
+$('dtabs').onclick=e=>{const b=e.target.closest('button');if(b)dtab(b.dataset.t)};
+$('cCid').value=DC.cid||'';$('cRoot').value=DC.root||'Clientes';recent();if(!DC.cid)dtab('c');else initG();
+function initG(){if(tc)return;if(!window.google||!google.accounts){setTimeout(initG,300);return}
+tc=google.accounts.oauth2.initTokenClient({client_id:DC.cid,scope:'https://www.googleapis.com/auth/drive',callback:r=>{if(r.error){toast('Não foi possível conectar');return}tok=r.access_token;$('bd').textContent='● Conectado';$('bd').className='bd on';$('dAuth').style.display='none';cache={};go2()}})}
+$('dAuth').onclick=()=>{if(!DC.cid){dtab('c');toast('Informe o Client ID primeiro');return}initG();if(!tc){toast('Aguarde, carregando…');return}tc.requestAccessToken()};
+$('cS').onclick=()=>{const v=$('cCid').value.trim();if(v&&!v.includes('.apps.googleusercontent.com')){toast('Client ID inválido');return}DC.cid=v;DC.root=$('cRoot').value.trim()||'Clientes';dsave();tc=null;cache={};toast('Configurações salvas');if(v)initG()};
+$('cW').onclick=()=>{if(confirm('Esquecer o Client ID salvo neste navegador? (o Drive não é afetado)')){localStorage.removeItem(DK);DC={};tc=null;tok=null;$('cCid').value=''}};
+async function api(p,o={}){if(!tok){toast('Conecte-se ao Google primeiro');throw new Error('no token')}
+const r=await fetch('https://www.googleapis.com/drive/v3/'+p,{...o,headers:{...(o.headers||{}),Authorization:'Bearer '+tok}});
+if(!r.ok){if(r.status===401){tok=null;toast('Sessão expirou, conecte de novo')}throw new Error(await r.text())}return r.status===204?null:r.json()}
+async function ls(id){if(cache[id])return cache[id];const d=await api(`files?q=${encodeURIComponent(`'${id}' in parents and trashed=false`)}&fields=files(id,name,mimeType,modifiedTime,webViewLink)&orderBy=folder,name&pageSize=200`);return cache[id]=d.files||[]}
+async function foc(n,par){const d=await api(`files?q=${encodeURIComponent(`name='${n.replace(/'/g,"\\'")}' and '${par}' in parents and mimeType='${FM}' and trashed=false`)}&fields=files(id,name)`);if(d.files&&d.files.length)return d.files[0];
+return api('files',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,mimeType:FM,parents:[par]})})}
+async function upl(name,blob,par){const f=new FormData();f.append('metadata',new Blob([JSON.stringify({name,parents:[par]})],{type:'application/json'}));f.append('file',blob);
+const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+tok},body:f});if(!r.ok)throw new Error('up');return r.json()}
+const ask=(t,d='')=>new Promise(r=>{modal(`<h2>${t}</h2><input id="aiv" value="${esc(d)}">`,()=>{r($('aiv').value.trim())});$('mc').addEventListener('click',()=>r(null));setTimeout(()=>$('aiv')&&$('aiv').focus(),50)});
+/* rápido */
+$('wGo').onclick=async()=>{const c=$('wC').value.trim(),p=$('wP').value.trim();if(!c||!p){toast('Preencha cliente e projeto');return}
+const b=$('wGo');b.disabled=true;b.textContent='Criando…';
+try{const r=await foc(DC.root||'Clientes','root'),cf=await foc(c,r.id),pf=await foc(p,cf.id),l='https://drive.google.com/drive/folders/'+pf.id;
+lastW={c,t:p,dl:l};$('wL').textContent=l;$('wOpen').href=l;$('wOut').classList.add('on');
+let rc=[];try{rc=JSON.parse(localStorage.getItem(DR)||'[]')}catch(e){}rc.unshift({c,p,l});try{localStorage.setItem(DR,JSON.stringify(rc.slice(0,8)))}catch(e){}
+recent();cache={};toast('Pasta pronta!')}catch(e){toast('Erro ao criar pasta')}finally{b.disabled=false;b.textContent='Criar / abrir pasta'}};
+$('wCp').onclick=()=>navigator.clipboard.writeText($('wL').textContent).then(()=>toast('Link copiado'));
+function recent(){let rc=[];try{rc=JSON.parse(localStorage.getItem(DR)||'[]')}catch(e){}
+$('dRec').innerHTML=rc.length?rc.map(r=>`<div class="fr" style="border:1px solid var(--line);border-radius:8px"><span class="nm">📁 <b>${esc(r.c)}</b> · ${esc(r.p)}</span><a href="${esc(r.l)}" target="_blank" rel="noopener">Abrir ↗</a></div>`).join(''):'<span class="mu">Nenhuma pasta criada ainda.</span>'}
+/* arquivos */
+const crumbs=a=>a.map((x,k)=>`<button class="lk" data-i="${k}" data-id="${x.id}">${esc(x.name)}</button>`).join(' / ');
+const kids=async id=>(await ls(id)).filter(f=>f.mimeType===FM);
+const fold=a=>a.length?a.map(f=>`<div class="it" data-id="${f.id}" data-n="${esc(f.name)}">📁 ${esc(f.name)}</div>`).join(''):'<div class="mu" style="padding:8px">Sem subpastas.</div>';
+function nav(id,n){path.push({id,name:n});cur=id;go2()}
+function go2(){$('dCr').innerHTML=crumbs(path);tree();files()}
+async function tree(){const el=$('dTree');el.textContent='Carregando…';try{el.innerHTML=fold(await kids(cur))}catch(e){el.textContent='Não foi possível carregar.'}}
+$('dCr').onclick=e=>{const b=e.target.closest('button');if(!b)return;path=path.slice(0,+b.dataset.i+1);cur=b.dataset.id;go2()};
+$('dTree').onclick=e=>{const t=e.target.closest('.it');if(t)nav(t.dataset.id,t.dataset.n)};
+async function files(){sel.clear();btns();const bx=$('dFiles');bx.textContent='Carregando…';
+try{fl=await ls(cur);bx.innerHTML=fl.length?fl.map(f=>{const fo=f.mimeType===FM,pdf=f.mimeType==='application/pdf';
+return`<div class="fr"><input type="checkbox" data-c="${f.id}"><span class="nm" ${fo?`data-o="${f.id}" data-n="${esc(f.name)}" style="cursor:pointer"`:''}>${fo?'📁':pdf?'📕':'📄'} ${esc(f.name)}</span><span class="mu">${f.modifiedTime?new Date(f.modifiedTime).toLocaleDateString('pt-BR'):''}</span>${pdf?`<button data-pdf="${f.id}" data-n="${esc(f.name)}">✏️ Editar PDF</button>`:''}${f.webViewLink?`<a href="${f.webViewLink}" target="_blank" rel="noopener">Abrir</a>`:''}</div>`}).join(''):'<div class="mu" style="padding:40px;text-align:center">Pasta vazia.</div>'}catch(e){bx.textContent='Não foi possível carregar esta pasta.'}}
+$('dFiles').onclick=e=>{const o=e.target.closest('[data-o]');if(o){nav(o.dataset.o,o.dataset.n);return}const p=e.target.closest('[data-pdf]');if(p){openPdf(p.dataset.pdf,p.dataset.n);return}const c=e.target.closest('input[data-c]');if(c){c.checked?sel.add(c.dataset.c):sel.delete(c.dataset.c);btns()}};
+function btns(){$('dMv').disabled=$('dTr').disabled=!sel.size;$('dRn').disabled=sel.size!==1}
+const refresh=()=>{cache={};go2()};$('dRf').onclick=refresh;
+$('dNf').onclick=async()=>{const n=await ask('Nome da nova pasta');if(!n)return;try{await api('files',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,mimeType:FM,parents:[cur]})});refresh();toast('Pasta criada')}catch(e){toast('Erro ao criar pasta')}};
+$('dUp').onclick=()=>$('dFi').click();
+$('dFi').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;if(!tok){toast('Conecte-se ao Google primeiro');return}toast('Enviando '+fs.length+' arquivo(s)…');
+for(const f of fs){try{await upl(f.name,f,cur)}catch(x){toast('Falha ao enviar '+f.name)}}e.target.value='';refresh();toast('Envio concluído')};
+$('dRn').onclick=async()=>{const id=[...sel][0],c=fl.find(f=>f.id===id),n=await ask('Novo nome',c?c.name:'');if(!n)return;try{await api('files/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n})});refresh();toast('Renomeado')}catch(e){toast('Erro ao renomear')}};
+$('dTr').onclick=async()=>{if(!confirm('Mover '+sel.size+' item(ns) para a lixeira do Drive?'))return;for(const id of sel){try{await api('files/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({trashed:true})})}catch(e){}}refresh();toast('Enviado(s) para a lixeira')};
+async function pk(id){$('pC').innerHTML=crumbs(pP);pT=id;const el=$('pTr');el.textContent='…';try{el.innerHTML=fold(await kids(id))}catch(e){el.textContent='Erro ao carregar'}}
+$('dMv').onclick=()=>{pP=[{id:'root',name:'Meu Drive'}];
+modal('<h2>Escolha o destino</h2><div id="pC" class="mu"></div><div id="pTr" style="max-height:280px;overflow:auto;margin-top:8px"></div>',async()=>{const d=pT;for(const id of sel){try{await api(`files/${id}?addParents=${d}&removeParents=${cur}`,{method:'PATCH'})}catch(e){}}refresh();toast('Movido(s) com sucesso')});
+$('pC').onclick=e=>{const b=e.target.closest('button');if(!b)return;pP=pP.slice(0,+b.dataset.i+1);pk(b.dataset.id)};
+$('pTr').onclick=e=>{const t=e.target.closest('.it');if(!t)return;pP.push({id:t.dataset.id,name:t.dataset.n});pk(t.dataset.id)};pk('root')};
+/* PDF — editor estilo Word */
+const FF={Helvetica:'Helvetica,Arial,sans-serif',Times:'"Times New Roman",Times,serif',Courier:'"Courier New",monospace'};
+let objs=[],pages=[],Z=1.2,selO=null,tool='edit',curP=0,oid=0,Hs=[],Rs=[],drawTk=0,pTxt=[],clean=true;
+const FMT={f:'Helvetica',z:12,b:0,i:0,u:0,c:'#000000'};
+const rgbOf=h=>PDFLib.rgb(...[1,3,5].map(k=>parseInt(h.slice(k,k+2),16)/255));
+const mp=(R,X,Y,W,H)=>R===90?[W-Y,X]:R===180?[W-X,H-Y]:R===270?[Y,H-X]:[X,Y];
+const stdFont=o=>{const m={Helvetica:['Helvetica','HelveticaBold','HelveticaOblique','HelveticaBoldOblique'],Times:['TimesRoman','TimesRomanBold','TimesRomanItalic','TimesRomanBoldItalic'],Courier:['Courier','CourierBold','CourierOblique','CourierBoldOblique']};return PDFLib.StandardFonts[m[o.f][(o.b?1:0)+(o.i?2:0)]]};
+const el=o=>document.querySelector(`.ob[data-id="${o.id}"]`);
+const snap=()=>({b:pdfB,o:JSON.stringify(objs)});
+const pushH=()=>{const s=snap(),l=Hs[Hs.length-1];if(l&&l.b===s.b&&l.o===s.o)return;Hs.push(s);if(Hs.length>25)Hs.shift();Rs=[];clean=false};
+const hist=async(f,t)=>{const h=f.pop();if(!h)return false;t.push(snap());pdfB=h.b;objs=JSON.parse(h.o);selO=null;clean=false;await draw();return true};
+const guard=()=>clean||!pdfB||confirm('Há alterações não salvas neste PDF. Descartar e abrir outro?');
+addEventListener('beforeunload',e=>{if(!clean&&pdfB&&$('dv').classList.contains('on')){e.preventDefault();e.returnValue=''}});
+async function pdfSet(b,n,id){pdfB=b;pdfN=n;pdfI=id||null;objs=[];Hs=[];Rs=[];selO=null;curP=0;clean=true;$('pNm').textContent=n+(id?' (do Drive)':'');setTool('edit');await draw();aiStat()}
+async function openPdf(id,n){if(!guard())return;dtab('p');toast('Baixando PDF…');try{const r=await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`,{headers:{Authorization:'Bearer '+tok}});if(!r.ok)throw 0;await pdfSet(new Uint8Array(await r.arrayBuffer()),n,id)}catch(e){toast('Não foi possível baixar o PDF')}}
+$('pOpen').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f&&guard())pdfSet(new Uint8Array(await f.arrayBuffer()),f.name,null)};
+const ov=(a,c)=>{const x=Math.min(a.x+a.w,c.x+c.w)-Math.max(a.x,c.x),y=Math.min(a.b+a.z*.25,c.b+c.z*.25)-Math.max(a.b-a.z*.9,c.b-c.z*.9);return x>0&&y>0&&x*y>.3*Math.min(a.w*a.z*1.15,c.w*c.z*1.15)};
+async function draw(){if(!pdfB)return;if(!window.pdfjsLib){toast('Biblioteca de PDF não carregou');return}
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const host=$('pgs'),tk=++drawTk,ratio=host.scrollHeight?host.scrollTop/host.scrollHeight:0;let doc;
+try{doc=await pdfjsLib.getDocument({data:pdfB.slice()}).promise}catch(e){toast('Não foi possível abrir este PDF');return}
+const F=document.createDocumentFragment(),T=document.createDocumentFragment(),np=[],tx2=[],th=[],dpr=Math.min(devicePixelRatio||1,2);
+for(let n=1;n<=doc.numPages;n++){if(tk!==drawTk){doc.destroy();return}
+ const pg=await doc.getPage(n),v1=pg.getViewport({scale:1}),w=v1.width,h=v1.height,d=document.createElement('div'),c=document.createElement('canvas'),v2=pg.getViewport({scale:Z*dpr}),tl=document.createElement('div'),po=document.createElement('div');
+ d.className='pgw';d.style.width=w*Z+'px';d.style.height=h*Z+'px';c.width=v2.width;c.height=v2.height;tl.className='tl';po.className='po';d.append(c,tl,po);F.append(d);np.push({w,h,d,po,tl});
+ await pg.render({canvasContext:c.getContext('2d'),viewport:v2}).promise;
+ const t2=document.createElement('canvas'),v3=pg.getViewport({scale:100/w}),tb=document.createElement('div');t2.width=v3.width;t2.height=v3.height;tb.className='tn';tb.dataset.n=n-1;
+ tb.append(t2,Object.assign(document.createElement('span'),{textContent:n}));T.append(tb);th.push(pg.render({canvasContext:t2.getContext('2d'),viewport:v3}).promise);
+ tx2[n-1]='';
+ if(pg.rotate===0){const tx=await pg.getTextContent(),its=[];
+  tx.items.forEach(it=>{const m=pdfjsLib.Util.transform(v1.transform,it.transform),z=Math.hypot(m[2],m[3]);if(!it.str.trim()||!z||!(it.width>0))return;const ff=(tx.styles[it.fontName]||{}).fontFamily||'';
+   its.push({s:it.str,x:m[4],b:m[5],z:Math.round(z*10)/10,w:it.width,f:/mono|courier/i.test(ff)?'Courier':/serif/i.test(ff)&&!/sans/i.test(ff)?'Times':'Helvetica',p:n-1})});
+  const kp=its.length>1500?its:its.filter((a,k)=>!its.slice(k+1).some(c2=>ov(a,c2)));tx2[n-1]=kp.map(t=>t.s).join(' ');
+  kp.forEach((t,k)=>{t.k=k;const b=document.createElement('div');b.className='ti';b.style.cssText=`left:${t.x*Z}px;top:${(t.b-t.z)*Z}px;width:${t.w*Z}px;height:${t.z*1.2*Z}px`;b.dataset.i=JSON.stringify(t);tl.append(b)})}
+}
+await Promise.all(th);doc.destroy();if(tk!==drawTk)return;
+host.replaceChildren(F);$('thm').replaceChildren(T);pages=np;pTxt=tx2;host.scrollTop=ratio*host.scrollHeight;paint();upSt()}
+function bgAt(p,x,y){try{const c=pages[p].d.firstChild,k=c.width/pages[p].w,g=c.getContext('2d').getImageData(Math.max(0,Math.round(x*k)),Math.round(y*k),1,1).data;return'#'+[g[0],g[1],g[2]].map(v=>v.toString(16).padStart(2,'0')).join('')}catch(e){return'#ffffff'}}
+function editItem(t,s){const o={id:++oid,t:'txt',p:t.p,x:t.x,y:t.b-t.z*.94,z:t.z,s:s==null?t.s:s,f:t.f,b:0,i:0,u:0,c:'#000000'};
+objs.push({id:++oid,t:'rect',p:t.p,x:t.x-1,y:t.b-t.z*.95,w:t.w+2,h:t.z*1.25,c:bgAt(t.p,t.x>4?t.x-3:t.x+t.w+3,t.b-t.z*.3)});if(o.s)objs.push(o);return o}
+function st(e,o){e.style.left=o.x*Z+'px';e.style.top=o.y*Z+'px';if(o.t==='txt'){e.style.fontSize=o.z*Z+'px';e.style.fontFamily=FF[o.f];e.style.fontWeight=o.b?700:400;e.style.fontStyle=o.i?'italic':'normal';e.style.textDecoration=o.u?'underline':'none';e.style.color=o.c}else{e.style.width=o.w*Z+'px';e.style.height=o.h*Z+'px';if(o.t==='rect')e.style.background=o.c}}
+function mk(o){const e=document.createElement('div');e.className='ob '+o.t;e.dataset.id=o.id;
+if(o.t==='txt'){e.innerHTML='<span class="hd" contenteditable="false">✥</span><div class="tx" contenteditable="true" spellcheck="false"></div>';const t=e.lastChild;t.textContent=o.s;
+ t.oninput=()=>{o.s=t.innerText.replace(/\n$/,'')};t.onfocus=pushH;
+ t.onblur=()=>{if(!o.s.trim()){objs=objs.filter(x=>x!==o);if(selO===o)selO=null;e.remove()}};
+ t.onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();document.execCommand('insertLineBreak')}};
+ t.onpaste=ev=>{ev.preventDefault();document.execCommand('insertText',false,ev.clipboardData.getData('text/plain'))}}
+else{if(o.t==='img'){const im=new Image();im.src=o.u;im.draggable=false;e.append(im)}e.append(Object.assign(document.createElement('span'),{className:'rz'}))}
+st(e,o);return e}
+function paint(){pages.forEach(p=>p.po.innerHTML='');objs.forEach(o=>{const p=pages[o.p];if(p)p.po.append(mk(o))});if(selO){const e=el(selO);e&&e.classList.add('sl')}}
+function fUI(){$('fF').value=FMT.f;$('fZ').value=Math.round(FMT.z*10)/10;$('fB').classList.toggle('on',!!FMT.b);$('fI').classList.toggle('on',!!FMT.i);$('fU').classList.toggle('on',!!FMT.u);$('fC').value=FMT.c}
+function selo(o){document.querySelectorAll('.ob.sl').forEach(x=>x.classList.remove('sl'));selO=o||null;if(o){const e=el(o);e&&e.classList.add('sl');if(o.t==='txt'){Object.assign(FMT,{f:o.f,z:o.z,b:o.b,i:o.i,u:o.u||0,c:o.c});fUI()}if(o.t==='rect')$('rC').value=o.c}}
+const focusO=o=>{const e=el(o),t=e&&e.querySelector('.tx');if(t){t.focus();document.execCommand('selectAll')}};
+function setTool(t){tool=t;$('pgs').classList.toggle('em',t==='edit');$('pgs').classList.toggle('adt',t==='txt');$('tSel').classList.toggle('on',t==='sel');$('tEd').classList.toggle('on',t==='edit');$('tTx').classList.toggle('on',t==='txt')}
+const need=()=>{if(!pdfB){toast('Abra um PDF primeiro');return false}return true};
+$('tSel').onclick=()=>setTool('sel');$('tEd').onclick=()=>{if(need())setTool('edit')};
+$('tTx').onclick=()=>{if(!need())return;setTool('txt');toast('Clique na página onde quer o texto')};
+$('rb').addEventListener('mousedown',e=>{if(e.target.closest('button')&&!e.target.closest('#rt'))e.preventDefault()});
+function addTxt(pw,e){const r=pw.getBoundingClientRect();pushH();curP=Math.max(0,pages.findIndex(p=>p.d===pw));
+ const o={id:++oid,t:'txt',p:curP,x:(e.clientX-r.left)/Z,y:(e.clientY-r.top)/Z,z:FMT.z,s:'Texto',f:FMT.f,b:FMT.b,i:FMT.i,u:FMT.u,c:FMT.c};objs.push(o);setTool('edit');paint();selo(o);focusO(o)}
+$('pgs').addEventListener('pointerdown',e=>{
+const ti=e.target.closest('.ti');
+if(ti){e.preventDefault();pushH();const o=editItem(JSON.parse(ti.dataset.i));ti.remove();paint();selo(o);focusO(o);return}
+const pw=e.target.closest('.pgw');if(pw){curP=[...$('pgs').children].indexOf(pw);upSt()}
+const ob=e.target.closest('.ob');
+if(!ob){if(tool==='txt'&&pw){e.preventDefault();addTxt(pw,e)}else selo(null);return}
+const o=objs.find(x=>x.id==ob.dataset.id);selo(o);
+const hd=e.target.classList.contains('hd'),rz=e.target.classList.contains('rz');if(o.t==='txt'&&!hd)return;
+e.preventDefault();pushH();const sx=e.clientX,sy=e.clientY,ox=o.x,oy=o.y,ow=o.w,oh=o.h;
+const mv=ev=>{const dx=(ev.clientX-sx)/Z,dy=(ev.clientY-sy)/Z;if(rz){o.w=Math.max(8,ow+dx);o.h=Math.max(8,oh+dy)}else{o.x=ox+dx;o.y=oy+dy}st(ob,o)};
+addEventListener('pointermove',mv);addEventListener('pointerup',()=>removeEventListener('pointermove',mv),{once:true})});
+$('pgs').addEventListener('dblclick',e=>{const pw=e.target.closest('.pgw');if(!pw||e.target.closest('.ob,.ti'))return;addTxt(pw,e)});
+function fm(k,v,nh){FMT[k]=v;if(selO&&selO.t==='txt'){if(!nh)pushH();selO[k]=v;st(el(selO),selO)}}
+let cp=0;
+$('fF').onchange=e=>fm('f',e.target.value);$('fZ').onchange=e=>{fm('z',Math.min(200,Math.max(4,+e.target.value||12)));fUI()};
+$('fB').onclick=()=>{fm('b',FMT.b?0:1);fUI()};$('fI').onclick=()=>{fm('i',FMT.i?0:1);fUI()};$('fU').onclick=()=>{fm('u',FMT.u?0:1);fUI()};
+$('fC').oninput=e=>fm('c',e.target.value,cp++>0);$('fC').onchange=()=>cp=0;
+const sz=d=>{const z=Math.round(FMT.z);fm('z',Math.min(200,Math.max(4,z+(d>0?(z>=12?2:1):-(z>12?2:1)))));fUI()};$('fUp').onclick=()=>sz(1);$('fDn').onclick=()=>sz(-1);
+const delO=()=>{if(!selO)return;pushH();objs=objs.filter(x=>x!==selO);selO=null;paint()};$('oDel').onclick=delO;
+$('uUn').onclick=async()=>{if(!await hist(Hs,Rs))toast('Nada para desfazer')};$('uRe').onclick=async()=>{if(!await hist(Rs,Hs))toast('Nada para refazer')};
+addEventListener('keydown',e=>{if(!$('dv').classList.contains('on')||!$('d-p').classList.contains('on'))return;const a=document.activeElement,ed=a&&(a.isContentEditable||/INPUT|SELECT/.test(a.tagName)),c=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();if(a&&a.tagName==='TEXTAREA')return;
+if(c&&'biu'.includes(k)&&k.length===1&&selO&&selO.t==='txt'){e.preventDefault();$({b:'fB',i:'fI',u:'fU'}[k]).click();return}
+if(c&&k==='s'){e.preventDefault();$('pDl').click();return}
+if((e.key==='Delete'||e.key==='Backspace')&&!ed&&selO){e.preventDefault();delO()}
+if(e.key==='Escape'){setTool('edit');selo(null)}
+if(c&&!ed&&(k==='y'||(k==='z'&&e.shiftKey))){e.preventDefault();$('uRe').click()}else if(c&&k==='z'&&!ed){e.preventDefault();$('uUn').click()}});
+$('iImg').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f||!need())return;const u=URL.createObjectURL(f),im=new Image();
+im.onload=()=>{const k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k|0;c.height=im.height*k|0;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+const w=Math.min(180,pages[curP].w-80),o={id:++oid,t:'img',p:curP,x:40,y:40,w,h:w*im.height/im.width,u:c.toDataURL('image/png')};URL.revokeObjectURL(u);pushH();objs.push(o);paint();selo(o)};im.src=u};
+$('iRc').onclick=()=>{if(!need())return;pushH();const o={id:++oid,t:'rect',p:curP,x:40,y:40,w:160,h:30,c:$('rC').value};objs.push(o);paint();selo(o)};
+$('rC').oninput=e=>{if(selO&&selO.t==='rect'){selO.c=e.target.value;st(el(selO),selO)}};
+async function commit(){if(!objs.length)return;const d=await PDFLib.PDFDocument.load(pdfB),fc={};
+const ld=async o=>{const f=await d.embedFont(stdFont(o));let cs;try{cs=new Set(f.getCharacterSet())}catch(e){}return{f,ok:ch=>cs?cs.has(ch.codePointAt(0)):ch.charCodeAt(0)<256}};
+for(const o of objs){const pg=d.getPage(o.p),R=((pg.getRotation().angle%360)+360)%360,{width:W,height:H}=pg.getSize(),ag=PDFLib.degrees(R),DH=pages[o.p].h,pl=(X,Y)=>mp(R,X,DH-Y,W,H);
+ if(o.t==='rect'){const[x,y]=pl(o.x,o.y+o.h);pg.drawRectangle({x,y,width:o.w,height:o.h,color:rgbOf(o.c),rotate:ag})}
+ else if(o.t==='img'){const[x,y]=pl(o.x,o.y+o.h),im=await d.embedPng(o.u);pg.drawImage(im,{x,y,width:o.w,height:o.h,rotate:ag})}
+ else{const k=o.f+o.b+o.i,F=fc[k]=fc[k]||await ld(o);
+  o.s.split('\n').forEach((ln,j)=>{const t=[...ln.replace(/\t/g,'  ')].map(ch=>F.ok(ch)?ch:'?').join(''),by=o.y+o.z*.94+j*o.z*1.2,[x,y]=pl(o.x,by);pg.drawText(t,{x,y,size:o.z,font:F.f,color:rgbOf(o.c),rotate:ag});
+   if(o.u&&t){const wd=F.f.widthOfTextAtSize(t,o.z),[x2,y2]=pl(o.x+wd,by+o.z*.12),[x1,y1]=pl(o.x,by+o.z*.12);pg.drawLine({start:{x:x1,y:y1},end:{x:x2,y:y2},thickness:Math.max(.5,o.z/16),color:rgbOf(o.c)})}})}}
+pdfB=await d.save();objs=[]}
+async function fin(){if(!need())return false;if(objs.length){pushH();try{await commit()}catch(e){Hs.pop();toast('Erro ao aplicar as edições');console.error(e);return false}await draw()}return true}
+async function pOp(fn,np){if(!need())return false;if(!window.PDFLib){toast('Biblioteca de PDF não carregou');return false}
+const h0=Hs.length;try{pushH();await commit();const d=await PDFLib.PDFDocument.load(pdfB);await fn(d);pdfB=await d.save();if(np!==undefined)curP=np;await draw();goP(curP);return true}catch(e){if(Hs.length>h0)Hs.pop();toast('Não deu certo');console.error(e);return false}}
+const goP=n=>{const p=pages[n];if(p)$('pgs').scrollTo({top:p.d.offsetTop-12,behavior:'smooth'})};
+function upSt(){$('pSt').textContent=pages.length?`Página ${curP+1} de ${pages.length}`:'';document.querySelectorAll('.tn').forEach(t=>t.classList.toggle('on',+t.dataset.n===curP))}
+$('thm').onclick=e=>{const t=e.target.closest('.tn');if(t){curP=+t.dataset.n;upSt();goP(curP)}};
+$('pgs').onscroll=()=>{const m=$('pgs').scrollTop+$('pgs').clientHeight/3;let k=0;pages.forEach((p,n)=>{if(p.d.offsetTop<=m)k=n});if(k!==curP){curP=k;upSt()}};
+const zoom=d=>{Z=Math.min(3,Math.max(.5,Z+d));$('zV').textContent=Math.round(Z*100)+'%';draw()};$('zI').onclick=()=>zoom(.2);$('zO').onclick=()=>zoom(-.2);
+const rot=async(d,n)=>{const p=d.getPage(n);p.setRotation(PDFLib.degrees((p.getRotation().angle+90)%360))};
+$('gRot').onclick=()=>pOp(d=>rot(d,curP));
+$('gDel').onclick=()=>pOp(async d=>{if(d.getPageCount()<2)throw 0;d.removePage(curP)},Math.min(curP,pages.length-2));
+$('gDup').onclick=()=>pOp(async d=>{const[c]=await d.copyPages(d,[curP]);d.insertPage(curP+1,c)},curP+1);
+const mv2=(n,m)=>pOp(async d=>{const[c]=await d.copyPages(d,[n]);d.removePage(n);d.insertPage(m,c)},m);
+$('gUp').onclick=()=>{if(curP>0)mv2(curP,curP-1)};$('gDn').onclick=()=>{if(curP<pages.length-1)mv2(curP,curP+1)};
+const blank=n=>pOp(async d=>{const s=d.getPage(n).getSize();d.insertPage(n+1,[s.width,s.height])},n+1);$('gBl').onclick=()=>blank(curP);
+$('pMg').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const ob=new Uint8Array(await f.arrayBuffer());
+pOp(async d=>{const o=await PDFLib.PDFDocument.load(ob),ps=await d.copyPages(o,o.getPageIndices());ps.forEach(p=>d.addPage(p))},curP)};
+$('rt').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#rt button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.rp').forEach(p=>p.classList.toggle('on',p.id==='rp-'+b.dataset.r))};
+$('pDl').onclick=async()=>{if(!await fin())return;const u=URL.createObjectURL(new Blob([pdfB],{type:'application/pdf'})),a=document.createElement('a');a.href=u;a.download=pdfN.replace(/\.pdf$/i,'')+'-editado.pdf';a.click();clean=true;setTimeout(()=>URL.revokeObjectURL(u),4000)};
+$('pSv').onclick=async()=>{if(!pdfI){toast('Só vale para PDF aberto do Drive');return}if(!await fin())return;if(!confirm('Substituir o PDF original no Drive? (o Drive guarda o histórico de versões)'))return;
+try{const r=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${pdfI}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/pdf'},body:pdfB});if(!r.ok)throw 0;clean=true;toast('PDF atualizado no Drive')}catch(e){toast('Erro ao salvar')}};
+const saveCopy=async()=>{if(!tok)throw new Error('Drive não conectado. Peça para a pessoa clicar em "Conectar com Google".');if(!await fin())throw new Error('Falha ao aplicar as edições');await upl(pdfN.replace(/\.pdf$/i,'')+'-editado.pdf',new Blob([pdfB],{type:'application/pdf'}),cur);cache={};clean=true};
+$('pCp').onclick=async()=>{try{await saveCopy();toast('Cópia salva na pasta atual do Drive')}catch(e){toast(e.message||'Erro ao salvar')}};
+const _da=$('dAuth').onclick;$('dAuth').onclick=()=>{if(!window.google)setTimeout(()=>{if(!window.google)toast('O login do Google não carrega aqui. Use esta página hospedada no seu domínio.')},1500);_da()};
+
+/* ===== Assistente IA (painel lateral: resolve direto no PDF, Drive e site) ===== */
+const AIR='Você é o Assistente do Acervo, dentro do painel do dono do site (organizador do Google Drive + editor de PDF). RESOLVA os problemas você mesmo com as ferramentas, em vez de só explicar como fazer. Regras: (1) Antes de editar o PDF, leia-o (ler_pdf; listar_trechos quando precisar de precisão). (2) Faça as edições e depois confirme em 1 a 3 frases o que mudou; diga que dá para desfazer (Ctrl+Z ou "desfazer"). (3) Nunca altere números, valores, datas ou nomes sem o pedido explícito; se faltar um dado essencial, faça UMA pergunta curta. (4) Texto trocado no PDF passa a usar Helvetica/Times/Courier; PDF escaneado não tem texto editável, então ofereça escrever por cima. (5) Coordenadas em pontos, origem no canto superior esquerdo (A4 ≈ 595 x 842). (6) Se uma ferramenta do Drive disser que não está conectado, peça para clicar em "Conectar com Google". (7) Para qualquer outro assunto responda com seu conhecimento geral e, quando precisar de dados exatos, use pesquisar_wikipedia, calcular, converter_moeda ou a pesquisa na web; combine isso com as edições (ex.: pesquisar algo e escrever no PDF). Responda em português do Brasil, direto e sem enrolação.';
+let aiTurns=[],aiCtl=null,aiB=null;
+const P=n=>{if(!pdfB)throw new Error('Nenhum PDF aberto. Peça para abrir um (Arquivo → Abrir PDF) ou use drive_abrir_pdf.');n=Math.round(+n||curP+1)-1;if(!pages[n])throw new Error('Página inexistente (o PDF tem '+pages.length+').');return n};
+const vis=n=>{dtab('p');if(n!=null&&pages[n])goP(n)};
+const tis=n=>[...pages[n].tl.children].map(e=>({e,t:JSON.parse(e.dataset.i)}));
+const po=async(f,n)=>{if(!await pOp(f,n))throw new Error('A operação falhou.')};
+const D=()=>{if(!tok)throw new Error('Drive não conectado. Peça para a pessoa clicar em "Conectar com Google".')};
+const O=(p,x)=>({type:'object',properties:p,required:x||[]}),num={type:'number'},str={type:'string'};
+const KN={dolar:'USD',dolares:'USD',usd:'USD',euro:'EUR',euros:'EUR',eur:'EUR',libra:'GBP',libras:'GBP',gbp:'GBP',real:'BRL',reais:'BRL',brl:'BRL'};
+const cur3=s=>{const k=nz(String(s||'')).trim();return KN[k]||k.toUpperCase().slice(0,3)};
+const pnum=s=>{s=String(s).trim();if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');else if(/^\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,'');return parseFloat(s)};
+const fmtN=v=>v.toLocaleString('pt-BR',{maximumFractionDigits:6});
+let fxC=null;
+const rates=async()=>{if(fxC&&Date.now()-fxC.t<36e5)return fxC.r;const j=await(await fetch('https://open.er-api.com/v6/latest/USD')).json();if(!j.rates)throw new Error('Não consegui a cotação agora.');fxC={t:Date.now(),r:j.rates};return j.rates};
+const wiki=async q=>{const j=await(await fetch('https://pt.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=1&prop=extracts|info&exintro=1&explaintext=1&exsentences=4&inprop=url&gsrsearch='+encodeURIComponent(q))).json(),p=j.query&&Object.values(j.query.pages)[0];return p&&p.extract?{titulo:p.title,resumo:p.extract.trim(),link:p.fullurl}:null};
+const AT=[
+{name:'ler_pdf',description:'Lê o texto do PDF aberto. Com "pagina" (1 = primeira) lê só essa; sem ela, todas (truncado em 12000 caracteres).',inputSchema:O({pagina:num}),execute:i=>{if(!pdfB)P();if(i.pagina){const n=P(i.pagina);return{pagina:n+1,de:pages.length,texto:(pTxt[n]||'').slice(0,12000)||'(sem texto selecionável: escaneada ou girada)'}}return{paginas:pages.length,texto:pages.map((_,k)=>'[Pág '+(k+1)+'] '+(pTxt[k]||'')).join('\n').slice(0,12000)}}},
+{name:'listar_trechos',description:'Lista os trechos de texto editáveis de uma página, com índice (i), texto, posição e tamanho. Use com editar_trecho.',inputSchema:O({pagina:num}),execute:i=>{const n=P(i.pagina);return tis(n).slice(0,150).map(({t})=>({i:t.k,texto:t.s,x:Math.round(t.x),y:Math.round(t.b),tam:t.z}))}},
+{name:'editar_trecho',description:'Troca o texto de UM trecho (índice de listar_trechos) por outro; vazio apaga o trecho.',inputSchema:O({pagina:num,indice:num,novo_texto:str},['indice','novo_texto']),execute:i=>{const n=P(i.pagina),f=tis(n).find(x=>x.t.k===+i.indice);if(!f)throw new Error('Trecho inexistente ou já editado; liste de novo.');pushH();editItem(f.t,String(i.novo_texto));f.e.remove();paint();vis(n);return'Trecho editado'}},
+{name:'substituir_texto',description:'Troca um trecho de texto por outro em todo o PDF (ou numa página). Só acha texto contido numa mesma linha do PDF; se falhar, use listar_trechos + editar_trecho.',inputSchema:O({de:str,para:str,pagina:num},['de','para']),execute:i=>{const de=String(i.de||''),pa=String(i.para==null?'':i.para);if(!de)throw new Error('Informe o trecho a trocar.');const n0=i.pagina?P(i.pagina):null,h0=Hs.length;let c=0;pushH();
+ objs.forEach(o=>{if(o.t==='txt'&&(n0==null||o.p===n0)&&o.s.includes(de)){o.s=o.s.split(de).join(pa);c++}});
+ pages.forEach((_,k)=>{if(n0!=null&&k!==n0)return;tis(k).forEach(({e,t})=>{if(!t.s.includes(de))return;editItem(t,t.s.split(de).join(pa));e.remove();c++})});
+ if(!c){if(Hs.length>h0)Hs.pop();throw new Error('Não achei "'+de+'" numa única linha. Use listar_trechos para ver como o texto está dividido.')}paint();vis(n0);return{trocas:c}}},
+{name:'adicionar_texto',description:'Escreve um texto novo numa página (x,y em pontos a partir do canto superior esquerdo).',inputSchema:O({texto:str,pagina:num,x:num,y:num,tamanho:num,fonte:{type:'string',enum:['Helvetica','Times','Courier']},negrito:{type:'boolean'},italico:{type:'boolean'},sublinhado:{type:'boolean'},cor:{type:'string',description:'hex #000000'}},['texto']),execute:i=>{const n=P(i.pagina),s=String(i.texto||'').slice(0,3000);if(!s)throw new Error('Texto vazio.');pushH();objs.push({id:++oid,t:'txt',p:n,x:Math.max(0,+i.x||40),y:Math.max(0,+i.y||40),z:Math.min(200,Math.max(4,+i.tamanho||14)),s,f:FF[i.fonte]?i.fonte:'Helvetica',b:i.negrito?1:0,i:i.italico?1:0,u:i.sublinhado?1:0,c:/^#[0-9a-f]{6}$/i.test(i.cor||'')?i.cor:'#000000'});paint();vis(n);return'Texto adicionado na página '+(n+1)}},
+{name:'cobrir_area',description:'Desenha um retângulo colorido (padrão branco) para cobrir/tarjar uma área da página.',inputSchema:O({pagina:num,x:num,y:num,largura:num,altura:num,cor:str},['x','y','largura','altura']),execute:i=>{const n=P(i.pagina);pushH();objs.push({id:++oid,t:'rect',p:n,x:+i.x,y:+i.y,w:Math.max(2,+i.largura),h:Math.max(2,+i.altura),c:/^#[0-9a-f]{6}$/i.test(i.cor||'')?i.cor:'#ffffff'});paint();vis(n);return'Área coberta'}},
+{name:'girar_pagina',description:'Gira uma página 90° no sentido horário.',inputSchema:O({pagina:num}),execute:async i=>{const n=P(i.pagina);await po(d=>rot(d,n),n);vis(n);return'Página '+(n+1)+' girada'}},
+{name:'inserir_pagina_em_branco',description:'Insere página em branco depois da página indicada.',inputSchema:O({apos_pagina:num}),execute:async i=>{const n=P(i.apos_pagina);await po(async d=>{const s=d.getPage(n).getSize();d.insertPage(n+1,[s.width,s.height])},n+1);vis(n+1);return'Página em branco inserida'}},
+{name:'excluir_pagina',description:'Exclui uma página do PDF.',inputSchema:O({pagina:num},['pagina']),execute:async i=>{const n=P(i.pagina);if(pages.length<2)throw new Error('O PDF precisa de pelo menos 1 página.');await po(async d=>d.removePage(n),Math.min(n,pages.length-2));vis(curP);return'Página '+(n+1)+' excluída'}},
+{name:'duplicar_pagina',description:'Duplica uma página (a cópia fica logo depois).',inputSchema:O({pagina:num}),execute:async i=>{const n=P(i.pagina);await po(async d=>{const[c]=await d.copyPages(d,[n]);d.insertPage(n+1,c)},n+1);vis(n+1);return'Página duplicada'}},
+{name:'mover_pagina',description:'Move a página "pagina" para a posição "para" (1 = primeira).',inputSchema:O({pagina:num,para:num},['pagina','para']),execute:async i=>{const n=P(i.pagina),m=P(i.para);if(n===m)return'Já está nessa posição';await po(async d=>{const[c]=await d.copyPages(d,[n]);d.removePage(n);d.insertPage(m,c)},m);vis(m);return'Movida para a posição '+(m+1)}},
+{name:'desfazer',description:'Desfaz a última alteração no PDF.',inputSchema:O({}),execute:async()=>{if(!await hist(Hs,Rs))throw new Error('Nada para desfazer.');vis();return'Desfeito'}},
+{name:'salvar_copia_no_drive',description:'Aplica as edições e salva uma cópia "-editado.pdf" na pasta atual do Drive (não altera o original).',inputSchema:O({}),execute:async()=>{await saveCopy();return'Cópia salva na pasta '+path[path.length-1].name}},
+{name:'drive_listar',description:'Lista arquivos e pastas da pasta atual do Drive (aba Arquivos).',inputSchema:O({}),execute:async()=>{D();return{pasta:path[path.length-1].name,itens:(await ls(cur)).slice(0,100).map(f=>({nome:f.name,tipo:f.mimeType===FM?'pasta':f.mimeType==='application/pdf'?'pdf':'arquivo'}))}}},
+{name:'drive_criar_pasta_cliente',description:'Cria (ou reaproveita) a estrutura Clientes/Cliente/Projeto no Drive e devolve o link.',inputSchema:O({cliente:str,projeto:str},['cliente']),execute:async i=>{D();const r=await foc(DC.root||'Clientes','root'),cf=await foc(String(i.cliente),r.id),pf=i.projeto?await foc(String(i.projeto),cf.id):cf,l='https://drive.google.com/drive/folders/'+pf.id;cache={};lastW={c:i.cliente,t:i.projeto||'',dl:l};
+ let rc=[];try{rc=JSON.parse(localStorage.getItem(DR)||'[]')}catch(e){}rc.unshift({c:i.cliente,p:i.projeto||'',l});try{localStorage.setItem(DR,JSON.stringify(rc.slice(0,8)))}catch(e){}recent();return{link:l}}},
+{name:'drive_abrir_pdf',description:'Abre no editor um PDF da pasta atual do Drive, procurando pelo nome (parte do nome basta).',inputSchema:O({nome:str},['nome']),execute:async i=>{D();const q=String(i.nome||'').toLowerCase(),f=(await ls(cur)).find(x=>x.mimeType==='application/pdf'&&x.name.toLowerCase().includes(q));if(!f)throw new Error('PDF não encontrado na pasta atual. Use drive_listar.');await openPdf(f.id,f.name);if(pdfN!==f.name)throw new Error('A pessoa cancelou a abertura.');return'Aberto: '+f.name}},
+{name:'numerar_paginas',description:'Numera todas as páginas do PDF. "formato" aceita {n} e {total}.',inputSchema:O({formato:str,posicao:{type:'string',enum:['rodape','topo']},alinhamento:{type:'string',enum:['centro','direita','esquerda']},tamanho:num}),execute:i=>{P();const f=String(i.formato||'Página {n} de {total}'),z=Math.min(36,Math.max(6,+i.tamanho||10));pushH();pages.forEach((pg,k)=>{const s=f.replace('{n}',k+1).replace('{total}',pages.length),w=s.length*z*.5,x=i.alinhamento==='direita'?pg.w-40-w:i.alinhamento==='esquerda'?40:(pg.w-w)/2;objs.push({id:++oid,t:'txt',p:k,x,y:i.posicao==='topo'?28:pg.h-28-z,z,s,f:'Helvetica',b:0,i:0,u:0,c:'#555555'})});paint();vis(curP);return'Numeradas '+pages.length+' páginas'}},
+{name:'marca_dagua',description:'Escreve uma marca d’água (texto grande cinza-claro, centralizado) em todas as páginas.',inputSchema:O({texto:str,tamanho:num,cor:str},['texto']),execute:i=>{P();const s=String(i.texto).slice(0,40),z=Math.min(120,Math.max(20,+i.tamanho||64));pushH();pages.forEach((pg,k)=>objs.push({id:++oid,t:'txt',p:k,x:Math.max(10,(pg.w-s.length*z*.55)/2),y:pg.h/2-z/2,z,s,f:'Helvetica',b:1,i:0,u:0,c:/^#[0-9a-f]{6}$/i.test(i.cor||'')?i.cor:'#d9d9d9'}));paint();vis(curP);return'Marca d’água aplicada em '+pages.length+' páginas'}},
+{name:'transformar_texto',description:'Muda a caixa do texto (maiusculas, minusculas, capitalizar) de um trecho (se informado) ou de uma página/PDF inteiro.',inputSchema:O({modo:{type:'string',enum:['maiusculas','minusculas','capitalizar']},trecho:str,pagina:num},['modo']),execute:i=>{P();const f={maiusculas:s=>s.toUpperCase(),minusculas:s=>s.toLowerCase(),capitalizar:s=>s.toLowerCase().replace(/(^|\s)(\p{L})/gu,(m,a,b)=>a+b.toUpperCase())}[i.modo];if(!f)throw new Error('Modo inválido.');const n0=i.pagina?P(i.pagina):null,tr=i.trecho?String(i.trecho):null;let c=0;pushH();pages.forEach((_,k)=>{if(n0!=null&&k!==n0)return;tis(k).forEach(({e,t})=>{if(tr&&!t.s.includes(tr))return;editItem(t,tr?t.s.split(tr).join(f(tr)):f(t.s));e.remove();c++})});if(!c)throw new Error('Nada para alterar.');paint();vis(n0);return{trechos:c}}},
+{name:'pesquisar_wikipedia',description:'Busca na Wikipédia em português e devolve o resumo do artigo mais relevante. Use para fatos, pessoas, lugares, conceitos e datas.',inputSchema:O({consulta:str},['consulta']),execute:async i=>{const r=await wiki(String(i.consulta||'')).catch(()=>{throw new Error('Não consegui acessar a Wikipédia agora (internet?).')});if(!r)throw new Error('Não encontrei nada sobre isso na Wikipédia.');return r}},
+{name:'calcular',description:'Calcula uma expressão matemática (+ - * / ^ e parênteses; porcentagem como "15% de 2340"), com números no formato brasileiro.',inputSchema:O({expressao:str},['expressao']),execute:i=>{const e=nz(String(i.expressao||'')).replace(/(\d[\d.,]*)\s*%\s*de\s*(\d[\d.,]*)/g,'($1*0.01*$2)').replace(/(\d[\d.,]*)\s*%/g,'($1*0.01)').replace(/(\d)\s*x\s*(\d)/g,'$1*$2').replace(/×/g,'*').replace(/÷/g,'/').replace(/\^/g,'**').replace(/\d[\d.,]*/g,x=>pnum(x));if(!/^[\d+\-*\/().\s]+$/.test(e))throw new Error('Expressão inválida.');const r=Function('"use strict";return ('+e+')')();if(!isFinite(r))throw new Error('Resultado inválido.');return{resultado:r,texto:fmtN(r)}}},
+{name:'converter_moeda',description:'Converte valores entre moedas com a cotação do dia (USD, EUR, GBP, BRL e outras de 3 letras).',inputSchema:O({valor:num,de:str,para:str},['valor','de','para']),execute:async i=>{const v=typeof i.valor==='number'?i.valor:pnum(i.valor),a=cur3(i.de),b=cur3(i.para),r=await rates().catch(()=>{throw new Error('Não consegui a cotação agora (internet?).')});if(!r[a]||!r[b])throw new Error('Moeda não encontrada.');const x=v/r[a]*r[b],c=r[b]/r[a];return{resultado:x,cotacao:c,texto:fmtN(v)+' '+a+' = '+x.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+b+' (1 '+a+' = '+fmtN(+c.toFixed(4))+' '+b+')'}}}
+];
+AT.forEach(t=>{const f=t.execute;t.execute=async(i,c)=>{const ch=document.createElement('div');ch.className='ai-b t';ch.textContent='🔧 '+t.name.replace(/_/g,' ');$('aiM').insertBefore(ch,aiB);$('aiSc').scrollTop=1e9;try{return await f(i||{},c)}catch(e){ch.textContent+=' — '+e.message;throw e}}});
+const aiAdd=(c,t)=>{$('aiW').style.display='none';const b=document.createElement('div');b.className='ai-b '+c;b.textContent=t;$('aiM').append(b);$('aiSc').scrollTop=1e9;return b};
+function aiStat(){$('aiSt').textContent=pdfB?'📕 '+pdfN:'Nenhum PDF aberto'}
+const aiTog=on=>{const d=$('dv');d.classList.toggle('aio',on);if(on){aiStat();$('aiI').focus()}};
+$('aiTg').onclick=()=>aiTog(!$('dv').classList.contains('aio'));$('aiT').onclick=()=>aiTog(true);$('aiX').onclick=()=>aiTog(false);
+$('aiI').oninput=function(){this.style.height='auto';this.style.height=Math.min(160,this.scrollHeight)+'px'};
+$('aiN').onclick=()=>{if(aiCtl)aiCtl.abort();aiTurns=[];$('aiM').innerHTML='';$('aiW').style.display='';aiStat()};
+$('aiC').onclick=e=>{const b=e.target.closest('button');if(b)aiSend(b.textContent)};
+$('aiI').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSend()}};
+$('aiS').onclick=()=>aiCtl?aiCtl.abort():aiSend();
+const AK='acervo-ai-cfg';let AC={};try{AC=JSON.parse(localStorage.getItem(AK))||{}}catch(e){}
+$('aMode').value=AC.mode||'local';$('aWeb').checked=!!AC.web;$('aKey').value=AC.key||'';$('aMod').value=AC.model||'claude-sonnet-5-5';$('aUrl').value=AC.url||'';
+const asave=()=>{try{localStorage.setItem(AK,JSON.stringify(AC))}catch(e){}};
+$('aS').onclick=()=>{AC={mode:$('aMode').value,web:$('aWeb').checked,key:$('aKey').value.trim(),model:$('aMod').value.trim()||'claude-sonnet-5-5',url:$('aUrl').value.trim()};asave();toast('IA configurada')};
+$('aW').onclick=()=>{if(confirm('Apagar a chave de IA salva neste navegador?')){localStorage.removeItem(AK);AC={};$('aKey').value='';$('aUrl').value=''}};
+function keyModal(){modal('<h2>🔑 Ligar a IA</h2><p class="hint" style="margin:0 0 8px">Cole sua chave da API da Anthropic (console.anthropic.com → API Keys). Ela fica salva só neste navegador.</p><label>Chave</label><input id="kk" type="password" placeholder="sk-ant-...">',()=>{const v=$('kk').value.trim();if(!/^sk-/.test(v)){toast('Chave inválida');return false}AC.key=v;AC.mode='api';$('aMode').value='api';AC.model=AC.model||'claude-sonnet-5-5';asave();$('aKey').value=v;$('aMod').value=AC.model;toast('Modo Anthropic ligado! Envie sua mensagem de novo.')})}
+/* ===== Assistente LOCAL — feito do zero: sem chave, sem internet, roda no navegador ===== */
+const nz=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const STOP=new Set(nz('a o as os de da do das dos e em no na nos nas um uma para por com que qual quais quanto quando como onde se ao é são foi ser tem ter isso este esta esse essa meu minha seu sua pdf documento arquivo me mim eu voce').split(/\s+/));
+const TY={voce:'você',voces:'vocês',nao:'não',sao:'são',ja:'já',tambem:'também',entao:'então',porem:'porém',alem:'além',apos:'após',mes:'mês',tres:'três',orcamento:'orçamento',orcamentos:'orçamentos',solucao:'solução',solucoes:'soluções',informacao:'informação',informacoes:'informações',producao:'produção',criacao:'criação',atencao:'atenção',preco:'preço',precos:'preços',servico:'serviço',servicos:'serviços',endereco:'endereço',codigo:'código',numero:'número',pagina:'página',minimo:'mínimo',maximo:'máximo',proximo:'próximo',unico:'único',util:'útil',agencia:'agência',experiencia:'experiência',historia:'história',ultimo:'último',ultima:'última'};
+const fixPT=s=>s.replace(/(?<![\p{L}@\/.])\p{L}+(?![\p{L}@\/])/gu,w=>{const r=TY[w.toLowerCase()];if(!r)return w;return w.length>1&&w===w.toUpperCase()?r.toUpperCase():w[0]!==w[0].toLowerCase()?r[0].toUpperCase()+r.slice(1):r}).replace(/ {2,}/g,' ').replace(/\s+([,;])/g,'$1').replace(/(?<![\p{L}])(\p{L}{2,})\s+\1(?![\p{L}])/giu,'$1');
+function summ(tx,k=4){const ss=tx.split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(s=>s.length>25);if(ss.length<2)return[tx.slice(0,400)+(tx.length>400?'…':'')];if(ss.length<=k)return ss;const fr={};nz(tx).split(/[^a-z0-9]+/).forEach(w=>{if(w.length>3&&!STOP.has(w))fr[w]=(fr[w]||0)+1});
+return ss.map((s,i)=>({s,i,v:nz(s).split(/[^a-z0-9]+/).reduce((a,w)=>a+(fr[w]||0),0)/Math.sqrt(s.split(' ').length)})).sort((a,b)=>b.v-a.v).slice(0,k).sort((a,b)=>a.i-b.i).map(x=>x.s)}
+function qa(q){const ws=nz(q).split(/[^a-z0-9]+/).filter(w=>w.length>2&&!STOP.has(w));if(!ws.length)return[];const out=[];pTxt.forEach((tx,k)=>{const w=(tx||'').split(/\s+/);for(let i=0;i<w.length;i+=12){const s=w.slice(i,i+30).join(' '),z=nz(s),v=ws.filter(x=>z.includes(x)).length;if(v)out.push({s,v,k})}});return out.sort((a,b)=>b.v-a.v).slice(0,3)}
+const call=(n,a)=>AT.find(t=>t.name===n).execute(a||{});
+const HELP='Eu rodo aqui dentro, sem chave. Entendo pedidos como:\n\n📄 PDF\n• resuma · revise e corrija os erros · leia o texto\n• troque "2025" por "2026" · cubra "valor antigo"\n• escreva "Proposta" no topo da página 1 (tamanho 20, negrito)\n• numere as páginas · marca d’água "RASCUNHO" · coloque em maiúsculas\n• gire/exclua/duplique a página 2 · mova a página 4 para 1 · página em branco\n• perguntas sobre o PDF: qual o prazo?\n• desfaça · refaça\n\n📁 Drive\n• crie a pasta do cliente Maria Souza projeto Site\n• liste os arquivos · abra o pdf proposta · salve uma cópia no drive\n\n🌎 Conhecimento\n• quem foi Santos Dumont? · pesquise fotossíntese (Wikipédia)\n• 15% de 2.340 · 100 dólares em reais · cotação do euro · que horas são\n\nPara conversa livre com conhecimento amplo, ligue o motor Anthropic em Configurações.';
+const NOPDF='Abra um PDF primeiro (Arquivo → Abrir PDF, ou "Editar PDF" na aba Arquivos).',NOTXT='Esse PDF não tem texto selecionável (parece escaneado). Posso escrever por cima: peça "escreva ... na página 1".';
+let aiPend=null;
+async function localAI(t){const n=nz(t);
+if(aiPend){const f=aiPend;aiPend=null;if(/^(cancel|deixa|esquece|nao precisa)/.test(n))return'Tudo bem, cancelei.';return f(t)}
+const G=(m,k)=>m[k]==null?null:t.slice(m.indices[k][0],m.indices[k][1]).trim(),pg=s=>s?+s:undefined;
+const rep=async(f,ok)=>{try{const r=await f();return typeof ok==='function'?ok(r):ok}catch(e){return e.message||String(e)}};
+const doRep=(de,pa,p)=>rep(()=>call('substituir_texto',{de,para:pa,pagina:p}),r=>'Troquei '+r.trocas+' ocorrência(s) de “'+de+'” por “'+pa+'”. Dá para desfazer (Ctrl+Z).');
+const Q='["“”\'«»]?';let m;
+if(/^(oi|ola|bom dia|boa tarde|boa noite|e ai)\b/.test(n))return'Olá! Posso editar o PDF aberto, organizar seu Drive e cadastrar projetos. Digite "ajuda" para ver exemplos.';
+if(/\b(ajuda|comandos|o que (voce )?(faz|sabe|pode)|como funciona)\b/.test(n))return HELP;
+if(/\b(desfa\w*|desfeito|voltar|volte)\b/.test(n))return rep(()=>call('desfazer'),'Desfeito.');
+if(/\brefa\w*/.test(n)){if(await hist(Rs,Hs)){vis();return'Refeito.'}return'Nada para refazer.'}
+if(m=/pagina\s+em\s+branco(?:.*?(?:depois|apos)\s+(?:da\s+)?(?:pagina\s*)?(\d+))?/d.exec(n))return rep(()=>call('inserir_pagina_em_branco',{apos_pagina:pg(G(m,1))}),'Inseri uma página em branco.');
+if(m=/\b(?:mov\w*|leve|passe)\s+(?:a\s+)?pagina\s*(\d+)\s+(?:para|pra|pro)\s+(?:a\s+|o\s+)?(?:posicao\s+|pagina\s+)?(\d+|inicio|comeco|fim|final)/d.exec(n)){const d=nz(G(m,2)),to=/^\d+$/.test(d)?+d:/fim|final/.test(d)?pages.length:1;return rep(()=>call('mover_pagina',{pagina:+G(m,1),para:to}),'Movi a página '+G(m,1)+' para a posição '+to+'.')}
+if(m=/\b(?:exclu\w*|apag\w*|remov\w*|delet\w*|elimin\w*)\s+(?:a\s+)?pagina\s*(\d+)/d.exec(n))return rep(()=>call('excluir_pagina',{pagina:+G(m,1)}),'Excluí a página '+G(m,1)+'.');
+if(m=/\b(?:duplic\w*|copi\w*)\s+(?:a\s+)?pagina\s*(\d+)?/d.exec(n))return rep(()=>call('duplicar_pagina',{pagina:pg(G(m,1))}),'Página duplicada.');
+if(/\bpasta\b/.test(n)&&/\b(cri\w*|faca|fazer|mont\w*|abr\w*|nova)\b/.test(n)){const c=new RegExp('cliente\\s+'+Q+'(.+?)'+Q+'(?=\\s+(?:projeto|e o projeto|com o projeto)\\b|\\s*[.!]?$)','d').exec(n),p=new RegExp('projeto\\s+'+Q+'(.+?)'+Q+'\\s*[.!]?$','d').exec(n);
+ const go=(cl,pr)=>rep(()=>call('drive_criar_pasta_cliente',{cliente:cl,projeto:pr||undefined}),r=>'Pasta pronta: '+r.link);
+ if(c)return go(G(c,1),p?G(p,1):null);
+ aiPend=a=>{const[cl,pr]=a.split(/\s*[\/;,]\s*|\s+-\s+/);return go(cl.trim(),pr&&pr.trim())};return'Qual o nome do cliente? (se já quiser o projeto: Cliente / Projeto)'}
+
+if(/\b(salv\w*|grav\w*)\b.*\b(copia|drive)\b/.test(n))return rep(()=>call('salvar_copia_no_drive'),r=>r);
+if(/\b(list\w*|mostr\w*|quais|ver)\b.*\b(arquivos|pasta|drive|pdfs)\b/.test(n))return rep(()=>call('drive_listar'),r=>r.pasta+':\n'+(r.itens.map(i=>(i.tipo==='pasta'?'📁 ':i.tipo==='pdf'?'📕 ':'📄 ')+i.nome).join('\n')||'(vazia)'));
+if(m=/\b(?:abr\w*|carreg\w*)\b.*\bpdf\b\s+(?:chamado\s+|com\s+nome\s+|do\s+)?["“”']?(.+?)["“”']?\s*[.!]?$/d.exec(n))return rep(()=>call('drive_abrir_pdf',{nome:G(m,1)}),r=>r);
+if(/\bnumer\w*\b.*\bpagina/.test(n)){const tp=/\btopo|cabecalho/.test(n),al=/direit/.test(n)?'direita':/esquerd/.test(n)?'esquerda':'centro';return rep(()=>call('numerar_paginas',{posicao:tp?'topo':'rodape',alinhamento:al}),'Numerei as páginas ('+(tp?'topo':'rodapé')+', '+al+'). Dá para desfazer.')}
+if(m=/marca\s*d.?\s*agua\s*(?:de\s+|com\s+|escrito\s+)?["“”'«»]?(.*?)["“”'«»]?\s*[.!]?$/d.exec(n)){const w=(G(m,1)||'RASCUNHO').toUpperCase();return rep(()=>call('marca_dagua',{texto:w}),'Apliquei a marca d’água “'+w+'” em todas as páginas (cinza-claro, por cima do conteúdo). Dá para desfazer.')}
+if(m=/\b(maiusc\w*|minusc\w*|caixa alta|caixa baixa|capitaliz\w*)/.exec(n)){const modo=/maiusc|alta/.test(m[1])?'maiusculas':/minusc|baixa/.test(m[1])?'minusculas':'capitalizar',q=/["“”'«»](.+?)["“”'«»]/.exec(t),pp=/pagina\s*(\d+)/.exec(n);return rep(()=>call('transformar_texto',{modo,trecho:q?q[1]:undefined,pagina:pp?+pp[1]:undefined}),r=>'Coloquei em '+modo+' '+r.trechos+' trecho(s). Dá para desfazer.')}
+{const ex=n.replace(/^(quanto (e|eh|da|vale)|calcule|calcular|resultado de)\s+/,'').replace(/\?$/,'').trim();if(/\d/.test(ex)&&/[+\-*\/x×÷^%]|\bde\b/.test(ex)&&/^[\d\s+\-*\/x×÷().,%^]+$|^\d[\d.,]*\s*%\s*de\s*\d[\d.,]*$/.test(ex))return rep(()=>call('calcular',{expressao:ex}),r=>'= '+r.texto)}
+if(/\b(que (dia|data) (e|eh) hoje|data de hoje|dia de hoje|que horas|hora (atual|agora))\b/.test(n)){const d=new Date();return'Hoje é '+d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+', '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'.'}
+if(m=/(\d[\d.,]*)\s*(dolar\w*|usd|euro\w*|eur|libra\w*|gbp|reais|real|brl)\s+(?:em|para|pra)\s+(dolar\w*|usd|euro\w*|eur|libra\w*|gbp|reais|real|brl)/d.exec(n))return rep(()=>call('converter_moeda',{valor:G(m,1),de:m[2],para:m[3]}),r=>r.texto);
+if(/\bcotacao\b|quanto (esta|ta|vale) o (dolar|euro)/.test(n)){const c=/euro/.test(n)?'EUR':'USD';return rep(()=>call('converter_moeda',{valor:1,de:c,para:'BRL'}),r=>r.texto)}
+if(m=/\b(?:tro[cq]|substitu|mud|alter)\w*\s+.*?["“”'«»](.+?)["“”'«»]\s+(?:por|para|pra)\s+["“”'«»](.+?)["“”'«»](?:\s+na\s+pagina\s+(\d+))?/d.exec(n))return doRep(G(m,1),G(m,2),pg(G(m,3)));
+if((m=new RegExp('\\b(?:tro[cq]|substitu|mud|alter)\\w*\\s+(?:o texto |a palavra |o trecho |o nome |o valor |a data |o preco )?'+Q+'(.+?)'+Q+'\\s+(?:por|para|pra)\\s+'+Q+'(.+?)'+Q+'(?:\\s+na\\s+pagina\\s+(\\d+))?\\s*[.!]?$','d').exec(n))&&!/^(a )?pagina\s*\d+$/.test(nz(G(m,1))))return doRep(G(m,1),G(m,2),pg(G(m,3)));
+if(m=new RegExp('\\b(?:tro[cq]|substitu)\\w*\\s+(?:o texto |a palavra |o trecho )?'+Q+'(.+?)'+Q+'\\s*[.!]?$','d').exec(n)){const de=G(m,1);aiPend=a=>doRep(de,a.replace(/^["“”']|["“”']$/g,''));return'Trocar “'+de+'” por qual texto?'}
+if(m=new RegExp('\\b(?:cubra|cobrir|tarje|tarjar|escond\\w*|apague o texto|remova o texto)\\s+(?:o texto\\s+|a palavra\\s+|o trecho\\s+)?'+Q+'(.+?)'+Q+'\\s*[.!]?$','d').exec(n))return rep(()=>call('substituir_texto',{de:G(m,1),para:''}),r=>'Cobri '+r.trocas+' trecho(s) com “'+G(m,1)+'”. Dá para desfazer.');
+if(m=/\b(?:adicion\w*|escrev\w*|coloqu\w*|insir\w*|inclu\w*)\b.*?["“”'«»](.+?)["“”'«»](.*)$/d.exec(n)||/\b(?:adicion\w*|escrev\w*|coloqu\w*|insir\w*)\b.*?(?:texto|titulo|frase)\s*:\s*(.+?)()$/d.exec(n)){
+ const s=G(m,1),r=m[2]||'',p=/pagina\s*(\d+)/.exec(r),z=/tamanho\s*(\d+)/.exec(r),ti=/titulo/.test(n),y=/rodape|embaixo|final|baixo/.test(r)?790:/meio|centro/.test(r)?400:40;
+ return rep(()=>call('adicionar_texto',{texto:s,pagina:p?+p[1]:undefined,x:40,y,tamanho:z?+z[1]:ti?24:14,negrito:ti||/negrito/.test(r)}),'Escrevi “'+s+'” '+(y>700?'no rodapé':y>300?'no meio':'no topo')+' da página '+(p?p[1]:curP+1)+'. Arraste pela alça ✥ para mover.')}
+if(m=/\b(?:gir\w*|rotacion\w*)\b(?:.*?pagina\s*(\d+))?/d.exec(n))return rep(()=>call('girar_pagina',{pagina:pg(G(m,1))}),'Página girada 90°.');
+if(/\b(revis\w*|corrij\w*|ortografi\w*|conf[ie]r\w*|verifiqu\w*)\b/.test(n)){if(!pdfB)return NOPDF;const L=[];pages.forEach((_,k)=>tis(k).forEach(x=>{const s2=fixPT(x.t.s);if(s2!==x.t.s)L.push([x,s2])}));
+ if(!L.length)return'Não achei erros que eu consiga corrigir com segurança. Faço correções básicas: acentos de palavras comuns, espaços duplicados e palavras repetidas. Para trocas específicas, diga: troque "X" por "Y".';
+ pushH();L.forEach(([x,s2])=>{editItem(x.t,s2);x.e.remove()});paint();vis();return'Corrigi '+L.length+' trecho(s):\n'+L.slice(0,8).map(([x,s2])=>'“'+x.t.s+'” → “'+s2+'”').join('\n')+(L.length>8?'\n…':'')+'\nDá para desfazer (Ctrl+Z).'}
+if(/\b(resum\w*|sintetiz\w*)\b/.test(n)){if(!pdfB)return NOPDF;const tx=pTxt.join(' ').trim();if(!tx)return NOTXT;return'Resumo ('+pages.length+' pág., ~'+tx.split(/\s+/).length+' palavras):\n'+summ(tx).map(s=>'• '+s).join('\n')}
+if(/\b(le|leia|ler|mostr\w*|exib\w*)\b.*\b(texto|conteudo|pdf|documento)\b/.test(n)){if(!pdfB)return NOPDF;const tx=pTxt.join('\n').trim();return tx?tx.slice(0,1500)+(tx.length>1500?'…':''):NOTXT}
+{const isQ=/\?|^(qual|quais|quanto|quando|onde|quem|como|tem|existe|o que|oque|pesquis|busqu|procur|me fal|fale|explic|defin)/.test(n)||/\b(valor|prazo|data|total|preco)\b/.test(n);
+if(isQ){const ws=nz(t).split(/[^a-z0-9]+/).filter(x=>x.length>2&&!STOP.has(x));
+ if(pdfB){const r=qa(t);if(/\b(pdf|documento|arquivo|contrato|proposta)\b/.test(n)||(r.length&&r[0].v>=Math.max(2,Math.ceil(ws.length*.6))))return r.length?'Encontrei no PDF:\n'+r.map(x=>'• (pág. '+(x.k+1)+') '+x.s).join('\n'):'Não achei isso no texto do PDF.'}
+ const w=/^(?:pesquis\w*|busqu\w*|procur\w*|me\s+fal\w*|fale|explique|explica|defina|defin\w*)\s+(?:sobre\s+|a\s+respeito\s+de\s+|de\s+)?(.+?)\s*[.!?]?$/d.exec(n)||/^(?:quem|o\s+que|oque)\s+(?:e|eh|foi|era|sao|significa|seria)\s+(?:o\s+|a\s+|os\s+|as\s+|um\s+|uma\s+)?(.+?)\s*[.!?]?$/d.exec(n),tp=w?G(w,1):t.replace(/[?!.]+$/,'');
+ return rep(()=>call('pesquisar_wikipedia',{consulta:tp}),r=>'📖 '+r.titulo+' (Wikipédia):\n'+r.resumo+'\n'+r.link+'\n\nResumo da Wikipédia; confira a fonte. Para respostas mais elaboradas, ligue o motor Anthropic em Configurações.')}}
+return'Ainda não entendi esse pedido. Digite "ajuda" para ver o que eu faço, ou escreva de outro jeito (ex.: troque "2025" por "2026").'}
+async function localSend(txt){const b=aiB=aiAdd('a','…');try{b.textContent=await localAI(txt)}catch(e){b.textContent='Não consegui: '+(e.message||e)}finally{aiB=null}}
+async function aiSend(txt){txt=(txt||$('aiI').value).trim();if(!txt||aiCtl)return;
+const lo=AC.mode!=='api';if(!lo&&!AC.key&&!AC.url){keyModal();return}
+$('aiI').value='';$('aiI').style.height='';aiAdd('u',txt);aiStat();
+if(lo)return localSend(txt);
+const user={role:'user',content:'[Contexto: '+(pdfB?'PDF "'+pdfN+'" aberto, '+pages.length+' página(s), página atual '+(curP+1)+(clean?'':', com alterações não salvas'):'nenhum PDF aberto')+'; Drive '+(tok?'conectado, pasta "'+path[path.length-1].name+'"':'não conectado')+']\n'+txt};
+const h=aiTurns.slice(-12);while(h.length&&h[0].role!=='user')h.shift();
+const msgs=[...h,user],b=aiB=aiAdd('a','Pensando…');aiCtl=new AbortController();$('aiS').textContent='Parar';let shown='';
+try{for(let r=0;r<14;r++){
+ const res=await fetch(AC.url||'https://api.anthropic.com/v1/messages',{method:'POST',signal:aiCtl.signal,headers:{'content-type':'application/json','anthropic-version':'2023-06-01',...(AC.key?{'x-api-key':AC.key,'anthropic-dangerous-direct-browser-access':'true'}:{})},body:JSON.stringify({model:AC.model||'claude-sonnet-5-5',max_tokens:4096,system:AIR,tools:[...AT.map(t=>({name:t.name,description:t.description,input_schema:t.inputSchema})),...(AC.web?[{type:'web_search_20250305',name:'web_search',max_uses:5}]:[])],messages:msgs})});
+ if(!res.ok){const e=new Error((await res.text()).slice(0,300));e.status=res.status;throw e}
+ const j=await res.json(),tx=j.content.filter(c=>c.type==='text').map(c=>c.text).join('\n').trim(),us=j.content.filter(c=>c.type==='tool_use');
+ if(tx){shown+=(shown?'\n\n':'')+tx;b.textContent=shown}
+ msgs.push({role:'assistant',content:j.content});
+ if(j.stop_reason==='pause_turn')continue;if(j.stop_reason!=='tool_use'||!us.length)break;
+ if(!shown)b.textContent='Trabalhando…';
+ const rs=[];for(const u of us){let out,er=false;try{const v=await AT.find(t=>t.name===u.name).execute(u.input);out=typeof v==='string'?v:JSON.stringify(v)}catch(e){out=e.message||String(e);er=true}rs.push({type:'tool_result',tool_use_id:u.id,content:String(out).slice(0,12000),is_error:er})}
+ msgs.push({role:'user',content:rs})}
+ shown=shown||'Pronto.';b.textContent=shown;aiTurns.push(user,{role:'assistant',content:shown})}
+catch(e){const ab=e.name==='AbortError';b.textContent=ab?(shown||'(interrompido)'):e.status===401?'Chave de API inválida. Confira em Configurações.':e.status===429?'Muitas mensagens seguidas. Espere um pouco.':e.status?'Erro da IA ('+e.status+'): '+e.message:'Não consegui falar com a IA. Verifique a internet e a chave.';if(ab&&shown)aiTurns.push(user,{role:'assistant',content:shown})}
+finally{aiCtl=null;aiB=null;$('aiS').textContent='Enviar'}}
+setTool('edit');aiStat();
+
+</script>
+</body>
+</html>
