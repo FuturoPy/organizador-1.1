@@ -480,14 +480,15 @@ return'Ainda não entendi esse pedido. Digite "ajuda" para ver o que eu faço, o
 async function localSend(txt){const b=aiB=aiAdd('a','…');try{b.textContent=await localAI(txt)}catch(e){b.textContent='Não consegui: '+(e.message||e)}finally{aiB=null}}
 /* ===== Gemini (API nativa: aceita chaves AIza... e AQ.Ab...) ===== */
 async function geminiChat(user,C){
- const model=C.fmod||FREE.gemini.model;
+ const model=C.fmod||FREE.gemini.model;let tm;
  const h=aiTurns.slice(-30);while(h.length&&h[0].role!=='user')h.shift();
  const contents=[...h.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:String(m.content)}]})),{role:'user',parts:[{text:user.content}]}];
  const decl=AT.map(t=>{const{required,...rest}=t.inputSchema;const d={name:t.name,description:t.description};if(Object.keys(rest.properties||{}).length)d.parameters=required&&required.length?{...rest,required}:rest;return d});
  const b=aiB=aiAdd('a','Pensando…');aiCtl=new AbortController();$('aiS').textContent='Parar';
  let shown='',offline=false;
  try{for(let r=0;r<20;r++){
-  const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',signal:aiCtl.signal,headers:{'content-type':'application/json','x-goog-api-key':C.fkey},body:JSON.stringify({systemInstruction:{parts:[{text:AIR}]},contents,tools:[{functionDeclarations:decl}]})});
+  let res;for(let k=0;k<4;k++){clearTimeout(tm);tm=setTimeout(()=>{aiCtl.timedOut=1;aiCtl.abort()},60000);
+  res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',signal:aiCtl.signal,headers:{'content-type':'application/json','x-goog-api-key':C.fkey},body:JSON.stringify({systemInstruction:{parts:[{text:AIR}]},contents,tools:[{functionDeclarations:decl}]})});clearTimeout(tm);if(res.status!==503&&res.status!==500)break;if(k<3){b.textContent='Gemini sobrecarregado, tentando de novo ('+(k+1)+'/3)…';await new Promise(w=>setTimeout(w,2500*(k+1)))}}
   if(!res.ok){const e=new Error((await res.text()).slice(0,300));e.status=res.status;throw e}
   const j=await res.json(),ct=j.candidates&&j.candidates[0]&&j.candidates[0].content;
   if(!ct||!ct.parts||!ct.parts.length)throw new Error(j.promptFeedback&&j.promptFeedback.blockReason?'Resposta bloqueada pelo Gemini ('+j.promptFeedback.blockReason+')':'Resposta vazia do Gemini');
@@ -504,11 +505,12 @@ async function geminiChat(user,C){
    rs.push({functionResponse:{...(fc.id?{id:fc.id}:{}),name:fc.name,response:{result:String(out).slice(0,12000)}}})}
   contents.push({role:'user',parts:rs})}
   shown=shown||'Pronto.';b.textContent=shown;aiTurns.push(user,{role:'assistant',content:shown})}
- catch(e){const ab=e.name==='AbortError';
-  if(!ab&&!e.status&&!/Resposta/.test(e.message||'')){offline=true;b.textContent='Sem conexão com o Gemini (ou o navegador bloqueou a chamada). Tentando o modo local…'}
-  else b.textContent=ab?(shown||'(interrompido)'):e.status===400&&/API key|API_KEY/i.test(e.message)?'Chave do Gemini inválida. Crie outra em aistudio.google.com/apikey.':e.status===401||e.status===403?'Chave sem permissão para o Gemini. Confira a chave e se o projeto dela tem a Generative Language API.':e.status===429?'Limite do plano gratuito atingido. Espere um pouco e tente de novo.':e.status===404?'Modelo não encontrado. Use gemini-flash-latest em “Modelo”.':e.status?'Erro do Gemini ('+e.status+'): '+e.message:e.message;
+ catch(e){const to=aiCtl&&aiCtl.timedOut,ab=e.name==='AbortError'&&!to;
+  if(to){b.textContent='O Gemini demorou mais de 1 minuto sem responder. Tente de novo ou use outro modelo.'}
+  else if(!ab&&!e.status&&!/Resposta/.test(e.message||'')){offline=true;b.textContent='Sem conexão com o Gemini (ou o navegador bloqueou a chamada). Tentando o modo local…'}
+  else b.textContent=ab?(shown||'(interrompido)'):e.status===400&&/API key|API_KEY/i.test(e.message)?'Chave do Gemini inválida. Crie outra em aistudio.google.com/apikey.':e.status===401||e.status===403?'Chave sem permissão para o Gemini. Confira a chave e se o projeto dela tem a Generative Language API.':e.status===429?'Limite do plano gratuito atingido. Espere um pouco e tente de novo.':e.status===404?'Modelo não encontrado. Use gemini-flash-latest em “Modelo”.':e.status===503?'O Gemini está sobrecarregado agora (problema do lado do Google, não da sua chave). Tente de novo em alguns minutos ou troque o “Modelo”.':e.status?'Erro do Gemini ('+e.status+'): '+e.message:e.message;
   if(ab&&shown)aiTurns.push(user,{role:'assistant',content:shown})}
- finally{aiCtl=null;aiB=null;$('aiS').textContent='Enviar'}
+ finally{clearTimeout(tm);aiCtl=null;aiB=null;$('aiS').textContent='Enviar'}
  if(offline)return localSend(user.content.replace(/^\[Contexto:[^\]]*\]\n/,''))}
 /* ===== Motor gratuito: qualquer API compatível com OpenAI (Gemini, Groq, OpenRouter) ===== */
 const FREE={gemini:{url:'https://generativelanguage.googleapis.com/v1beta/openai',model:'gemini-flash-latest'},openai:{url:'https://api.openai.com/v1',model:'gpt-4o-mini'},groq:{url:'https://api.groq.com/openai/v1',model:'llama-3.3-70b-versatile'},openrouter:{url:'https://openrouter.ai/api/v1',model:'meta-llama/llama-3.3-70b-instruct:free'},custom:{url:'',model:'llama3.1'}};
