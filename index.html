@@ -130,10 +130,12 @@ iframe.pf{width:100%;height:65vh;border:1px solid var(--line);border-radius:10px
   </div>
   
   <div class="dview" id="d-c">
-   <div class="dc"><h3>✨ Assistente de IA</h3><p class="mu"><b>Anthropic (padrão):</b> IA geral. Conversa sobre qualquer assunto, escreve, traduz, programa, pesquisa na web e ainda edita o PDF e organiza o Drive. Precisa de uma chave da API (console.anthropic.com), cobrada por uso, separada de qualquer assinatura do Claude. A chave fica só neste navegador. <b>Para sites com visitantes, use um proxy</b> (URL + senha abaixo) e deixe a chave só no servidor. <b>Local:</b> roda no navegador, sem chave e sem custo, mas só entende comandos de PDF, Drive e projetos (digite "ajuda" no chat).</p>
-    <div class="dr"><div><label>Motor</label><select id="aMode"><option value="api">Anthropic (IA geral, com chave)</option><option value="local">Local (sem chave)</option></select></div></div>
+   <div class="dc"><h3>✨ Assistente de IA</h3><p class="mu"><b>IA geral (padrão):</b> cole em “Chave da API” a chave da Anthropic (sk-ant…), do Google Gemini (AIza…, grátis em aistudio.google.com/apikey), da OpenAI (sk-…) ou da Groq (gsk_…); o site reconhece o provedor pelo começo da chave. Em “Modelo”, para o Gemini use <b>gemini-flash-latest</b>. Conversa sobre qualquer assunto, escreve, traduz, programa, pesquisa na web e ainda edita o PDF e organiza o Drive. Precisa de uma chave da API (console.anthropic.com), cobrada por uso, separada de qualquer assinatura do Claude. A chave fica só neste navegador. <b>Para sites com visitantes, use um proxy</b> (URL + senha abaixo) e deixe a chave só no servidor. <b>Local:</b> roda no navegador, sem chave e sem custo, mas só entende comandos de PDF, Drive e projetos (digite "ajuda" no chat).</p>
+    <div class="dr"><div><label>Motor</label><select id="aMode"><option value="api">IA geral (com chave)</option><option value="local">Local (sem chave)</option></select></div></div>
     <div class="dr"><div style="flex:2"><label>Chave da API</label><input id="aKey" type="password" placeholder="sk-ant-..."></div><div><label>Modelo</label><input id="aMod" list="aModL"><datalist id="aModL"><option value="claude-sonnet-5-5"><option value="claude-opus-5-5"><option value="claude-haiku-5-5"></datalist></div></div>
     <div class="dr"><div style="flex:2"><label>URL do proxy (opcional)</label><input id="aUrl" placeholder="https://seu-worker.workers.dev"></div><div style="flex:1"><label>Senha do proxy</label><input id="aPass" type="password" placeholder="opcional"></div></div>
+    <div class="dr" style="display:none"><div><label>Provedor</label><select id="aProv"><option value="gemini">Google Gemini — grátis (aistudio.google.com/apikey)</option><option value="openai">OpenAI / ChatGPT — pago (platform.openai.com)</option><option value="groq">Groq (console.groq.com/keys)</option><option value="openrouter">OpenRouter (openrouter.ai/keys)</option><option value="custom">Meu servidor (Ollama, LM Studio, vLLM)</option></select></div><div style="flex:2"><label>Chave do provedor</label><input id="aFKey" type="password" placeholder="cole a chave do provedor"></div><div><label>Modelo</label><input id="aFMod"></div></div>
+    <div class="dr" style="display:none"><div style="flex:2"><label>Endereço do seu servidor (só no modo “Meu servidor”)</label><input id="aFUrl" placeholder="http://localhost:11434/v1"></div></div>
     <div class="dr"><label style="font-weight:500"><input type="checkbox" id="aWeb"> Permitir pesquisa na web (se não estiver habilitada na sua conta da Anthropic, desliga sozinha)</label></div>
     <div class="dr"><button class="p" id="aS">Salvar IA</button><button id="aW" style="color:#ff8a70">Apagar chave</button></div></div>
    
@@ -410,11 +412,11 @@ $('aiI').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSen
 $('aiS').onclick=()=>aiCtl?aiCtl.abort():aiSend();
 const AK='acervo-ai-cfg';let AC={};try{AC=JSON.parse(localStorage.getItem(AK))||{}}catch(e){}
 if(!AC.mode)AC.mode='api';
-$('aMode').value=AC.mode;$('aWeb').checked=AC.web!==false;$('aKey').value=AC.key||'';$('aMod').value=AC.model||'claude-sonnet-5-5';$('aUrl').value=AC.url||'';$('aPass').value=AC.pass||'';
+$('aMode').value=AC.mode;$('aWeb').checked=AC.web!==false;$('aKey').value=AC.key||'';$('aMod').value=AC.model||'claude-sonnet-5-5';$('aUrl').value=AC.url||'';$('aPass').value=AC.pass||'';$('aProv').value=AC.prov||'gemini';$('aFKey').value=AC.fkey||'';$('aFMod').value=AC.fmod||'';$('aFUrl').value=AC.furl||'';
 const asave=()=>{try{localStorage.setItem(AK,JSON.stringify(AC))}catch(e){}};
-$('aS').onclick=()=>{AC={mode:$('aMode').value,web:$('aWeb').checked,key:$('aKey').value.trim(),model:$('aMod').value.trim()||'claude-sonnet-5-5',url:$('aUrl').value.trim(),pass:$('aPass').value.trim()};asave();toast('IA configurada')};
-$('aW').onclick=()=>{if(confirm('Apagar a chave de IA salva neste navegador?')){localStorage.removeItem(AK);AC={mode:'api'};$('aKey').value='';$('aUrl').value='';$('aPass').value=''}};
-function keyModal(){modal('<h2>🔑 Ligar a IA</h2><p class="hint" style="margin:0 0 8px">Cole sua chave da API da Anthropic (console.anthropic.com → API Keys). Ela fica salva só neste navegador.</p><label>Chave</label><input id="kk" type="password" placeholder="sk-ant-...">',()=>{const v=$('kk').value.trim();if(!/^sk-/.test(v)){toast('Chave inválida');return false}AC.key=v;AC.mode='api';$('aMode').value='api';AC.model=AC.model||'claude-sonnet-5-5';asave();$('aKey').value=v;$('aMod').value=AC.model;toast('IA ligada! Envie sua mensagem de novo.')})}
+$('aS').onclick=()=>{AC={mode:$('aMode').value,web:$('aWeb').checked,key:$('aKey').value.trim(),model:$('aMod').value.trim()||'claude-sonnet-5-5',url:$('aUrl').value.trim(),pass:$('aPass').value.trim(),prov:$('aProv').value,fkey:$('aFKey').value.trim(),fmod:$('aFMod').value.trim(),furl:$('aFUrl').value.trim()};asave();toast('IA configurada')};
+$('aW').onclick=()=>{if(confirm('Apagar a chave de IA salva neste navegador?')){localStorage.removeItem(AK);AC={mode:'api'};$('aKey').value='';$('aUrl').value='';$('aPass').value='';$('aFKey').value='';$('aFUrl').value=''}};
+function keyModal(){modal('<h2>🔑 Ligar a IA</h2><p class="hint" style="margin:0 0 8px">Cole sua chave de API (Anthropic sk-ant…, Google Gemini AIza…, OpenAI sk-… ou Groq gsk_…). Ela fica salva só neste navegador.</p><label>Chave</label><input id="kk" type="password" placeholder="sk-ant-...">',()=>{const v=$('kk').value.trim();if(v.length<20){toast('Chave inválida');return false}AC.key=v;AC.mode='api';$('aMode').value='api';AC.model=AC.model||'claude-sonnet-5-5';asave();$('aKey').value=v;$('aMod').value=AC.model;toast('IA ligada! Envie sua mensagem de novo.')})}
 /* ===== Assistente LOCAL — feito do zero: sem chave, sem internet, roda no navegador ===== */
 const nz=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const STOP=new Set(nz('a o as os de da do das dos e em no na nos nas um uma para por com que qual quais quanto quando como onde se ao é são foi ser tem ter isso este esta esse essa meu minha seu sua pdf documento arquivo me mim eu voce').split(/\s+/));
@@ -476,13 +478,47 @@ if(isQ){const ws=nz(t).split(/[^a-z0-9]+/).filter(x=>x.length>2&&!STOP.has(x));
  return rep(()=>call('pesquisar_wikipedia',{consulta:tp}),r=>'📖 '+r.titulo+' (Wikipédia):\n'+r.resumo+'\n'+r.link+'\n\nResumo da Wikipédia; confira a fonte. Para respostas mais elaboradas, use o motor Anthropic em Configurações.')}}
 return'Ainda não entendi esse pedido. Digite "ajuda" para ver o que eu faço, ou escreva de outro jeito (ex.: troque "2025" por "2026").'}
 async function localSend(txt){const b=aiB=aiAdd('a','…');try{b.textContent=await localAI(txt)}catch(e){b.textContent='Não consegui: '+(e.message||e)}finally{aiB=null}}
+/* ===== Motor gratuito: qualquer API compatível com OpenAI (Gemini, Groq, OpenRouter) ===== */
+const FREE={gemini:{url:'https://generativelanguage.googleapis.com/v1beta/openai',model:'gemini-flash-latest'},openai:{url:'https://api.openai.com/v1',model:'gpt-4o-mini'},groq:{url:'https://api.groq.com/openai/v1',model:'llama-3.3-70b-versatile'},openrouter:{url:'https://openrouter.ai/api/v1',model:'meta-llama/llama-3.3-70b-instruct:free'},custom:{url:'',model:'llama3.1'}};
+const autoProv=k=>/^AIza/.test(k)?'gemini':/^gsk_/.test(k)?'groq':/^sk-or-/i.test(k)?'openrouter':'openai';
+const fModels=Object.values(FREE).map(x=>x.model).concat(['gemini-2.5-flash']);
+const fFill=()=>{const m=FREE[$('aProv').value].model;$('aFMod').placeholder=m;if(!$('aFMod').value||fModels.includes($('aFMod').value))$('aFMod').value=m};
+$('aProv').onchange=fFill;fFill();
+async function freeChat(user,C=AC){
+ const pv=FREE[C.prov]||FREE.gemini,base=(C.prov==='custom'?C.furl||'':pv.url).replace(/\/$/,''),model=C.fmod||pv.model;
+ const h=aiTurns.slice(-30);while(h.length&&h[0].role!=='user')h.shift();
+ const msgs=[{role:'system',content:AIR},...h,{role:'user',content:user.content}];
+ const tools=AT.map(t=>{const{required,...rest}=t.inputSchema;return{type:'function',function:{name:t.name,description:t.description,parameters:required&&required.length?{...rest,required}:rest}}});
+ const b=aiB=aiAdd('a','Pensando…');aiCtl=new AbortController();$('aiS').textContent='Parar';
+ let shown='',offline=false;
+ try{for(let r=0;r<20;r++){
+  const res=await fetch(base+'/chat/completions',{method:'POST',signal:aiCtl.signal,headers:{'content-type':'application/json',...(C.fkey?{'authorization':'Bearer '+C.fkey}:{})},body:JSON.stringify({model,messages:msgs,tools,tool_choice:'auto'})});
+  if(!res.ok){const e=new Error((await res.text()).slice(0,300));e.status=res.status;throw e}
+  const j=await res.json(),m=j.choices&&j.choices[0]&&j.choices[0].message;if(!m)throw new Error('Resposta vazia do provedor');
+  if(m.content){shown+=(shown?'\n\n':'')+m.content;b.textContent=shown;$('aiSc').scrollTop=1e9}
+  msgs.push(m);
+  if(!m.tool_calls||!m.tool_calls.length)break;
+  if(!shown)b.textContent='Trabalhando…';
+  for(const c of m.tool_calls){let out;try{let a={};try{a=JSON.parse(c.function.arguments||'{}')}catch(e){}const t=AT.find(x=>x.name===c.function.name);if(!t)throw new Error('Ferramenta desconhecida');const v=await t.execute(a);out=typeof v==='string'?v:JSON.stringify(v)}catch(e){out='Erro: '+(e.message||e)}msgs.push({role:'tool',tool_call_id:c.id,name:c.function.name,content:String(out).slice(0,12000)})}}
+  shown=shown||'Pronto.';b.textContent=shown;aiTurns.push(user,{role:'assistant',content:shown})}
+ catch(e){const ab=e.name==='AbortError';
+  if(!ab&&!e.status){offline=true;b.textContent='Sem conexão com o provedor (ou o navegador bloqueou a chamada). Tentando o modo local…'}
+  else b.textContent=ab?(shown||'(interrompido)'):e.status===401||e.status===403?'Chave inválida ou sem permissão para este modelo. Confira a chave e o modelo em Configurações.':e.status===429?'Limite do plano atingido (ou sem saldo, no ChatGPT). Espere um pouco e tente de novo.':e.status===404?'Modelo não encontrado. Troque o “Modelo” em Configurações.':'Erro do provedor ('+e.status+'): '+e.message;
+  if(ab&&shown)aiTurns.push(user,{role:'assistant',content:shown})}
+ finally{aiCtl=null;aiB=null;$('aiS').textContent='Enviar'}
+ if(offline)return localSend(user.content.replace(/^\[Contexto:[^\]]*\]\n/,''))}
 async function aiSend(txt){
  txt=(txt||$('aiI').value).trim();if(!txt||aiCtl)return;
  const lo=AC.mode==='local';
- if(!lo&&!AC.key&&!AC.url){keyModal();return}
+ if(AC.mode==='free'&&AC.prov==='custom'&&!AC.furl){dtab('c');toast('Informe o endereço do seu servidor em Configurações → Assistente de IA');return}
+ if(AC.mode==='free'&&AC.prov!=='custom'&&!AC.fkey){dtab('c');toast('Cole a chave do provedor em Configurações → Assistente de IA');return}
+ if(!lo&&AC.mode!=='free'&&!AC.key&&!AC.url){keyModal();return}
  $('aiI').value='';$('aiI').style.height='';aiAdd('u',txt);aiStat();
  if(lo)return localSend(txt);
  const user={role:'user',content:'[Contexto: '+(pdfB?'PDF "'+pdfN+'" aberto, '+pages.length+' página(s), página atual '+(curP+1)+(clean?'':', com alterações não salvas'):'nenhum PDF aberto')+'; Drive '+(tok?'conectado, pasta "'+path[path.length-1].name+'"':'não conectado')+']\n'+txt};
+ if(AC.mode==='free')return freeChat(user);
+ const kk=(AC.key||'').trim();
+ if(AC.mode==='api'&&!AC.url&&kk&&!/^sk-ant/i.test(kk)){const pv=autoProv(kk);let md=(AC.model||'').trim();if(!/^(gemini-|gpt-|o\d|llama|qwen|mixtral|mistral)|\//i.test(md))md=FREE[pv].model;return freeChat(user,{prov:pv,fkey:kk,fmod:md})}
  const h=aiTurns.slice(-30);while(h.length&&h[0].role!=='user')h.shift();
  const msgs=[...h,user],b=aiB=aiAdd('a','Pensando…');aiCtl=new AbortController();$('aiS').textContent='Parar';
  let shown='',web=AC.web!==false,offline=false;
