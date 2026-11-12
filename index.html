@@ -85,8 +85,8 @@ iframe.pf{width:100%;height:65vh;border:1px solid var(--line);border-radius:10px
 <div class="dv on" id="dv">
  <div class="dh"><b>Organizador<i>.</i>Drive</b><span class="bd" id="bd">● Desconectado</span><button id="dAuth">Conectar com Google</button><button id="aiTg" class="p">✨ Assistente</button></div>
  <aside class="ai" id="ai"><div class="ai-top"><b>✨ Assistente</b><span class="mu" id="aiSt"></span><button id="aiN" title="Nova conversa">↺</button><button id="aiX" title="Fechar">✕</button></div>
- <div class="ai-sc" id="aiSc"><div class="ai-w" id="aiW"><h2>Como posso ajudar?</h2><p>Eu resolvo direto aqui: edito o PDF aberto, organizo o Drive e respondo dúvidas (Wikipédia, contas, cotação). Digite "ajuda" para ver exemplos.</p>
-  <div class="ai-c" id="aiC"><button>Revise este PDF e corrija os erros</button><button>Resuma este PDF</button><button>Crie a pasta de um cliente novo</button><button>Numere as páginas deste PDF</button></div></div><div class="ai-m" id="aiM"></div></div>
+ <div class="ai-sc" id="aiSc"><div class="ai-w" id="aiW"><h2>Pergunte qualquer coisa</h2><p>Converso sobre qualquer assunto, pesquiso na web e resolvo direto aqui: edito o PDF aberto e organizo o Drive.</p>
+  <div class="ai-c" id="aiC"><button>Revise este PDF e corrija os erros</button><button>Resuma este PDF em tópicos</button><button>Escreva um e-mail de cobrança educado</button><button>Me explique um assunto difícil de forma simples</button></div></div><div class="ai-m" id="aiM"></div></div>
  <div class="ai-bar"><div class="ai-in"><textarea id="aiI" rows="1" placeholder="Peça o que precisa…"></textarea><button id="aiS">Enviar</button></div></div></aside>
  <div class="dtb" id="dtabs"><button class="on" data-t="r">Organizar rápido</button><button data-t="a">Arquivos</button><button data-t="p">Editar PDF</button><button data-t="c">Configurações</button></div>
  <div class="dm">
@@ -97,9 +97,9 @@ iframe.pf{width:100%;height:65vh;border:1px solid var(--line);border-radius:10px
    <div class="dc"><h3>📥 Pastas recentes</h3><div id="dRec" style="display:flex;flex-direction:column;gap:8px;margin-top:10px"></div></div>
   </div>
   <div class="dview" id="d-a">
-   <div class="mu" id="dCr" style="margin-bottom:12px"></div>
+   <div class="mu" id="dCr" style="margin-bottom:6px"></div><div class="mu" style="margin-bottom:12px;font-size:.78rem">🔒 Permissão segura: este painel mostra o que o app criou e o que você escolher pelos botões “Escolher”. O resto do seu Drive fica invisível para o site.</div>
    <div class="dp"><div class="dtree" id="dTree"></div><div>
-    <div class="dr" style="margin:0 0 12px"><button id="dNf">+ Nova pasta</button><button id="dUp">+ Enviar arquivo</button><input type="file" id="dFi" multiple hidden><button id="dMv" disabled>Mover</button><button id="dRn" disabled>Renomear</button><button id="dTr" disabled>Lixeira</button><button id="dRf">↻</button></div>
+    <div class="dr" style="margin:0 0 12px"><button id="dPkF" class="p">📂 Escolher pasta</button><button id="dPkP" class="p">📕 Escolher PDF</button><button id="dNf">+ Nova pasta</button><button id="dUp">+ Enviar arquivo</button><input type="file" id="dFi" multiple hidden><button id="dMv" disabled>Mover</button><button id="dRn" disabled>Renomear</button><button id="dTr" disabled>Lixeira</button><button id="dRf">↻</button></div>
     <div class="fb" id="dFiles"><div class="mu" style="padding:40px;text-align:center">Conecte-se ao Google para ver seus arquivos.</div></div></div></div>
   </div>
   <div class="dview" id="d-p">
@@ -122,7 +122,7 @@ iframe.pf{width:100%;height:65vh;border:1px solid var(--line);border-radius:10px
      <div class="gp"><div class="gr"><button id="gUp">↑ Subir</button><button id="gDn">↓ Descer</button></div><span class="gl">Ordem</span></div>
      <div class="gp"><div class="gr"><button id="gBl">＋ Em branco</button><label class="bt">➕ Juntar PDF<input type="file" id="pMg" accept="application/pdf" hidden></label></div><span class="gl">Adicionar</span></div></div>
     <div class="rp" id="rp-a">
-     <div class="gp"><div class="gr"><label class="bt">📂 Abrir PDF<input type="file" id="pOpen" accept="application/pdf" hidden></label></div><span class="gl">Abrir</span></div>
+     <div class="gp"><div class="gr"><label class="bt">📂 Abrir PDF<input type="file" id="pOpen" accept="application/pdf" hidden></label><button id="pPk">☁ Abrir PDF do Drive</button></div><span class="gl">Abrir</span></div>
      <div class="gp"><div class="gr"><button id="pDl" title="Ctrl+S">⬇ Baixar</button><button id="pSv" class="p">Salvar no Drive (substituir)</button><button id="pCp">Salvar cópia na pasta atual</button></div><span class="gl">Salvar</span></div></div>
    </div>
    <div class="edw"><div class="thm" id="thm"></div><div class="pgs" id="pgs"><div class="mu" style="padding:40px;text-align:center">Abra um PDF em Arquivo → Abrir PDF, ou use "Editar PDF" na aba Arquivos.</div></div></div>
@@ -130,16 +130,17 @@ iframe.pf{width:100%;height:65vh;border:1px solid var(--line);border-radius:10px
   </div>
   
   <div class="dview" id="d-c">
-   <div class="dc"><h3>✨ Assistente de IA</h3><p class="mu"><b>Local (padrão):</b> assistente feito do zero que roda no seu navegador, sem chave, sem internet e sem custo. Entende pedidos de PDF, Drive e projetos (digite "ajuda" no chat) e não conversa livremente. <b>Anthropic (opcional):</b> conversa livre e entende qualquer pedido; precisa de uma chave da API (console.anthropic.com) e tem custo por uso. A chave fica só neste navegador; para mais segurança use um proxy seu.</p>
-    <div class="dr"><div><label>Motor</label><select id="aMode"><option value="local">Local (sem chave)</option><option value="api">Anthropic (com chave)</option></select></div></div>
-    <div class="dr"><div style="flex:2"><label>Chave da API</label><input id="aKey" type="password" placeholder="sk-ant-..."></div><div><label>Modelo</label><input id="aMod"></div></div>
-    <div class="dr"><div style="flex:2"><label>URL do proxy (opcional)</label><input id="aUrl" placeholder="https://.../functions/v1/ia"></div></div>
-    <div class="dr"><label style="font-weight:500"><input type="checkbox" id="aWeb"> Permitir pesquisa na web no motor Anthropic (precisa estar habilitada no console da Anthropic)</label></div>
+   <div class="dc"><h3>✨ Assistente de IA</h3><p class="mu"><b>Anthropic (padrão):</b> IA geral. Conversa sobre qualquer assunto, escreve, traduz, programa, pesquisa na web e ainda edita o PDF e organiza o Drive. Precisa de uma chave da API (console.anthropic.com), cobrada por uso, separada de qualquer assinatura do Claude. A chave fica só neste navegador. <b>Para sites com visitantes, use um proxy</b> (URL + senha abaixo) e deixe a chave só no servidor. <b>Local:</b> roda no navegador, sem chave e sem custo, mas só entende comandos de PDF, Drive e projetos (digite "ajuda" no chat).</p>
+    <div class="dr"><div><label>Motor</label><select id="aMode"><option value="api">Anthropic (IA geral, com chave)</option><option value="local">Local (sem chave)</option></select></div></div>
+    <div class="dr"><div style="flex:2"><label>Chave da API</label><input id="aKey" type="password" placeholder="sk-ant-..."></div><div><label>Modelo</label><input id="aMod" list="aModL"><datalist id="aModL"><option value="claude-sonnet-5-5"><option value="claude-opus-5-5"><option value="claude-haiku-5-5"></datalist></div></div>
+    <div class="dr"><div style="flex:2"><label>URL do proxy (opcional)</label><input id="aUrl" placeholder="https://seu-worker.workers.dev"></div><div style="flex:1"><label>Senha do proxy</label><input id="aPass" type="password" placeholder="opcional"></div></div>
+    <div class="dr"><label style="font-weight:500"><input type="checkbox" id="aWeb"> Permitir pesquisa na web (se não estiver habilitada na sua conta da Anthropic, desliga sozinha)</label></div>
     <div class="dr"><button class="p" id="aS">Salvar IA</button><button id="aW" style="color:#ff8a70">Apagar chave</button></div></div>
    
 
-   <div class="dc"><h3>Configurações</h3><p class="mu">O Google exige um Client ID gratuito (uma vez só): <b>1.</b> console.cloud.google.com → criar projeto. <b>2.</b> Ativar a <b>Google Drive API</b>. <b>3.</b> Tela de permissão OAuth → Externo → adicione seu e-mail em "Usuários de teste". <b>4.</b> Credenciais → ID do cliente OAuth → Aplicativo da Web → em "Origens JavaScript autorizadas" coloque o endereço deste site (e http://localhost). <b>5.</b> Cole o ID abaixo.</p>
+   <div class="dc"><h3>Configurações</h3><p class="mu">O Google exige um Client ID gratuito (uma vez só). <b>1.</b> console.cloud.google.com → criar projeto. <b>2.</b> Ativar a <b>Google Drive API</b> (APIs e serviços → Biblioteca). <b>3.</b> Tela de permissão OAuth → Externo; em Acesso a dados, adicione só o escopo <b>…/auth/drive.file</b> e clique em <b>Publicar app</b>. <b>4.</b> Credenciais → ID do cliente OAuth → Aplicativo da Web → em “Origens JavaScript autorizadas” coloque o endereço deste site (e http://localhost). <b>5.</b> Cole o Client ID abaixo. <b>Opcional:</b> para escolher PDFs e pastas do Drive, ative também a <b>Google Picker API</b>, crie uma <b>Chave de API</b> e cole-a junto com o <b>Número do projeto</b>; sem eles os botões “Escolher” ficam escondidos e o resto funciona normalmente.</p>
     <div class="dr"><div style="flex:2"><label>Client ID do Google</label><input id="cCid" placeholder="000-xxx.apps.googleusercontent.com"></div><div><label>Pasta raiz</label><input id="cRoot"></div></div>
+    <div class="dr"><div style="flex:2"><label>Chave de API do Google (Picker)</label><input id="cKey" placeholder="AIza..."></div><div><label>Número do projeto</label><input id="cApp" placeholder="123456789012"></div></div>
     <div class="dr"><button class="p" id="cS">Salvar</button><button id="cW" style="color:#ff8a70">Esquecer configuração</button></div></div>
   </div>
  </div>
@@ -148,6 +149,7 @@ iframe.pf{width:100%;height:65vh;border:1px solid var(--line);border-radius:10px
 <div class="ov" id="ov"><div class="mo" id="mo"></div></div><div class="toast" id="toast"></div>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://apis.google.com/js/api.js" async defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
@@ -163,12 +165,12 @@ let tok=null,tc=null,cur='root',path=[{id:'root',name:'Meu Drive'}],cache={},fl=
 const dsave=()=>{try{localStorage.setItem(DK,JSON.stringify(DC))}catch(e){}};
 function dtab(t){document.querySelectorAll('#dtabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('.dview').forEach(v=>v.classList.toggle('on',v.id==='d-'+t))}
 $('dtabs').onclick=e=>{const b=e.target.closest('button');if(b)dtab(b.dataset.t)};
-$('cCid').value=DC.cid||'';$('cRoot').value=DC.root||'Clientes';recent();if(!DC.cid)dtab('c');else initG();
+$('cCid').value=DC.cid||'';$('cRoot').value=DC.root||'Clientes';$('cKey').value=DC.key||'';$('cApp').value=DC.app||'';recent();if(!DC.cid)dtab('c');else initG();
 function initG(){if(tc)return;if(!window.google||!google.accounts){setTimeout(initG,300);return}
-tc=google.accounts.oauth2.initTokenClient({client_id:DC.cid,scope:'https://www.googleapis.com/auth/drive',callback:r=>{if(r.error){toast('Não foi possível conectar');return}tok=r.access_token;$('bd').textContent='● Conectado';$('bd').className='bd on';$('dAuth').style.display='none';cache={};go2()}})}
+tc=google.accounts.oauth2.initTokenClient({client_id:DC.cid,scope:'https://www.googleapis.com/auth/drive.file',callback:r=>{if(r.error){toast('Não foi possível conectar');return}tok=r.access_token;$('bd').textContent='● Conectado';$('bd').className='bd on';$('dAuth').style.display='none';cache={};go2()}})}
 $('dAuth').onclick=()=>{if(!DC.cid){dtab('c');toast('Informe o Client ID primeiro');return}initG();if(!tc){toast('Aguarde, carregando…');return}tc.requestAccessToken()};
-$('cS').onclick=()=>{const v=$('cCid').value.trim();if(v&&!v.includes('.apps.googleusercontent.com')){toast('Client ID inválido');return}DC.cid=v;DC.root=$('cRoot').value.trim()||'Clientes';dsave();tc=null;cache={};toast('Configurações salvas');if(v)initG()};
-$('cW').onclick=()=>{if(confirm('Esquecer o Client ID salvo neste navegador? (o Drive não é afetado)')){localStorage.removeItem(DK);DC={};tc=null;tok=null;$('cCid').value=''}};
+$('cS').onclick=()=>{const v=$('cCid').value.trim();if(v&&!v.includes('.apps.googleusercontent.com')){toast('Client ID inválido');return}DC.cid=v;DC.root=$('cRoot').value.trim()||'Clientes';DC.key=$('cKey').value.trim();DC.app=$('cApp').value.trim();dsave();tc=null;cache={};toast('Configurações salvas');if(v)initG()};
+$('cW').onclick=()=>{if(confirm('Esquecer o Client ID salvo neste navegador? (o Drive não é afetado)')){localStorage.removeItem(DK);DC={};tc=null;tok=null;$('cCid').value='';$('cKey').value='';$('cApp').value=''}};
 async function api(p,o={}){if(!tok){toast('Conecte-se ao Google primeiro');throw new Error('no token')}
 const r=await fetch('https://www.googleapis.com/drive/v3/'+p,{...o,headers:{...(o.headers||{}),Authorization:'Bearer '+tok}});
 if(!r.ok){if(r.status===401){tok=null;toast('Sessão expirou, conecte de novo')}throw new Error(await r.text())}return r.status===204?null:r.json()}
@@ -214,6 +216,19 @@ $('dMv').onclick=()=>{pP=[{id:'root',name:'Meu Drive'}];
 modal('<h2>Escolha o destino</h2><div id="pC" class="mu"></div><div id="pTr" style="max-height:280px;overflow:auto;margin-top:8px"></div>',async()=>{const d=pT;for(const id of sel){try{await api(`files/${id}?addParents=${d}&removeParents=${cur}`,{method:'PATCH'})}catch(e){}}refresh();toast('Movido(s) com sucesso')});
 $('pC').onclick=e=>{const b=e.target.closest('button');if(!b)return;pP=pP.slice(0,+b.dataset.i+1);pk(b.dataset.id)};
 $('pTr').onclick=e=>{const t=e.target.closest('.it');if(!t)return;pP.push({id:t.dataset.id,name:t.dataset.n});pk(t.dataset.id)};pk('root')};
+/* seletor do Google (permissão drive.file: o site só enxerga o que a pessoa escolhe) */
+let pkReady=false;
+const loadPicker=()=>new Promise((res,rej)=>{if(pkReady)return res();if(!window.gapi)return rej(new Error('gapi'));gapi.load('picker',{callback:()=>{pkReady=true;res()},onerror:()=>rej(new Error('picker'))})});
+async function pickDrive(kind,cb){
+ if(!tok){toast('Conecte-se ao Google primeiro');return}
+ if(!DC.key||!DC.app){dtab('c');toast('Informe a chave de API e o número do projeto do Google');return}
+ try{await loadPicker()}catch(e){toast('Não consegui carregar o seletor do Google');return}
+ const g=google.picker,v=kind==='folder'?new g.DocsView(g.ViewId.FOLDERS).setSelectFolderEnabled(true).setIncludeFolders(true).setMimeTypes(FM):new g.DocsView(g.ViewId.PDFS).setIncludeFolders(true);
+ new g.PickerBuilder().addView(v).setOAuthToken(tok).setDeveloperKey(DC.key).setAppId(DC.app).setCallback(d=>{if(d.action===g.Action.PICKED&&d.docs&&d.docs.length)cb(d.docs)}).build().setVisible(true)}
+const pkVis=()=>{const on=!!(DC.key&&DC.app);['dPkF','dPkP','pPk'].forEach(i=>$(i).style.display=on?'':'none')};pkVis();
+const _cS=$('cS').onclick;$('cS').onclick=()=>{_cS();pkVis()};
+$('dPkF').onclick=()=>pickDrive('folder',d=>{path=[{id:'root',name:'Meu Drive'},{id:d[0].id,name:d[0].name}];cur=d[0].id;go2();toast('Pasta escolhida: '+d[0].name)});
+$('dPkP').onclick=$('pPk').onclick=()=>pickDrive('pdf',d=>openPdf(d[0].id,d[0].name));
 /* PDF — editor estilo Word */
 const FF={Helvetica:'Helvetica,Arial,sans-serif',Times:'"Times New Roman",Times,serif',Courier:'"Courier New",monospace'};
 let objs=[],pages=[],Z=1.2,selO=null,tool='edit',curP=0,oid=0,Hs=[],Rs=[],drawTk=0,pTxt=[],clean=true;
@@ -339,8 +354,8 @@ const saveCopy=async()=>{if(!tok)throw new Error('Drive não conectado. Peça pa
 $('pCp').onclick=async()=>{try{await saveCopy();toast('Cópia salva na pasta atual do Drive')}catch(e){toast(e.message||'Erro ao salvar')}};
 const _da=$('dAuth').onclick;$('dAuth').onclick=()=>{if(!window.google)setTimeout(()=>{if(!window.google)toast('O login do Google não carrega aqui. Use esta página hospedada no seu domínio.')},1500);_da()};
 
-/* ===== Assistente IA (painel lateral: resolve direto no PDF, Drive e site) ===== */
-const AIR='Você é o Assistente do Acervo, dentro do painel do dono do site (organizador do Google Drive + editor de PDF). RESOLVA os problemas você mesmo com as ferramentas, em vez de só explicar como fazer. Regras: (1) Antes de editar o PDF, leia-o (ler_pdf; listar_trechos quando precisar de precisão). (2) Faça as edições e depois confirme em 1 a 3 frases o que mudou; diga que dá para desfazer (Ctrl+Z ou "desfazer"). (3) Nunca altere números, valores, datas ou nomes sem o pedido explícito; se faltar um dado essencial, faça UMA pergunta curta. (4) Texto trocado no PDF passa a usar Helvetica/Times/Courier; PDF escaneado não tem texto editável, então ofereça escrever por cima. (5) Coordenadas em pontos, origem no canto superior esquerdo (A4 ≈ 595 x 842). (6) Se uma ferramenta do Drive disser que não está conectado, peça para clicar em "Conectar com Google". (7) Para qualquer outro assunto responda com seu conhecimento geral e, quando precisar de dados exatos, use pesquisar_wikipedia, calcular, converter_moeda ou a pesquisa na web; combine isso com as edições (ex.: pesquisar algo e escrever no PDF). Responda em português do Brasil, direto e sem enrolação.';
+/* ===== Assistente IA (painel lateral: IA geral + resolve direto no PDF, Drive e site) ===== */
+const AIR='Você é um assistente de IA geral e completo, dentro do site do dono (organizador do Google Drive + editor de PDF). Converse sobre qualquer assunto: responda com conhecimento amplo e profundo, escreva, traduza, programe, analise, explique, brainstorme e dê opinião fundamentada. Quando o pedido envolver o PDF aberto ou o Drive, use as ferramentas e RESOLVA você mesmo, em vez de só explicar. Regras das ferramentas: (1) antes de editar o PDF, leia-o (ler_pdf; listar_trechos quando precisar de precisão); (2) depois de editar, confirme em 1 a 3 frases o que mudou e diga que dá para desfazer (Ctrl+Z ou "desfazer"); (3) nunca altere números, valores, datas ou nomes sem pedido explícito, e se faltar um dado essencial faça UMA pergunta curta; (4) texto trocado no PDF passa a usar Helvetica/Times/Courier, e PDF escaneado não tem texto editável, então ofereça escrever por cima; (5) coordenadas em pontos, origem no canto superior esquerdo (A4 ≈ 595 x 842); (6) se uma ferramenta do Drive disser que não está conectado, peça para clicar em "Conectar com Google"; o Drive usa permissão restrita, então você só enxerga o que o site criou ou o que a pessoa escolheu pelos botões "Escolher pasta" e "Escolher PDF" (você não consegue acionar o seletor, peça para ela clicar). Para dados atuais ou exatos use a pesquisa na web, pesquisar_wikipedia, calcular ou converter_moeda. Responda no idioma da pessoa (padrão: português do Brasil), de forma direta e sem enrolação.';
 let aiTurns=[],aiCtl=null,aiB=null;
 const P=n=>{if(!pdfB)throw new Error('Nenhum PDF aberto. Peça para abrir um (Arquivo → Abrir PDF) ou use drive_abrir_pdf.');n=Math.round(+n||curP+1)-1;if(!pages[n])throw new Error('Página inexistente (o PDF tem '+pages.length+').');return n};
 const vis=n=>{dtab('p');if(n!=null&&pages[n])goP(n)};
@@ -375,7 +390,7 @@ const AT=[
 {name:'drive_listar',description:'Lista arquivos e pastas da pasta atual do Drive (aba Arquivos).',inputSchema:O({}),execute:async()=>{D();return{pasta:path[path.length-1].name,itens:(await ls(cur)).slice(0,100).map(f=>({nome:f.name,tipo:f.mimeType===FM?'pasta':f.mimeType==='application/pdf'?'pdf':'arquivo'}))}}},
 {name:'drive_criar_pasta_cliente',description:'Cria (ou reaproveita) a estrutura Clientes/Cliente/Projeto no Drive e devolve o link.',inputSchema:O({cliente:str,projeto:str},['cliente']),execute:async i=>{D();const r=await foc(DC.root||'Clientes','root'),cf=await foc(String(i.cliente),r.id),pf=i.projeto?await foc(String(i.projeto),cf.id):cf,l='https://drive.google.com/drive/folders/'+pf.id;cache={};lastW={c:i.cliente,t:i.projeto||'',dl:l};
  let rc=[];try{rc=JSON.parse(localStorage.getItem(DR)||'[]')}catch(e){}rc.unshift({c:i.cliente,p:i.projeto||'',l});try{localStorage.setItem(DR,JSON.stringify(rc.slice(0,8)))}catch(e){}recent();return{link:l}}},
-{name:'drive_abrir_pdf',description:'Abre no editor um PDF da pasta atual do Drive, procurando pelo nome (parte do nome basta).',inputSchema:O({nome:str},['nome']),execute:async i=>{D();const q=String(i.nome||'').toLowerCase(),f=(await ls(cur)).find(x=>x.mimeType==='application/pdf'&&x.name.toLowerCase().includes(q));if(!f)throw new Error('PDF não encontrado na pasta atual. Use drive_listar.');await openPdf(f.id,f.name);if(pdfN!==f.name)throw new Error('A pessoa cancelou a abertura.');return'Aberto: '+f.name}},
+{name:'drive_abrir_pdf',description:'Abre no editor um PDF da pasta atual do Drive, procurando pelo nome (parte do nome basta).',inputSchema:O({nome:str},['nome']),execute:async i=>{D();const q=String(i.nome||'').toLowerCase(),f=(await ls(cur)).find(x=>x.mimeType==='application/pdf'&&x.name.toLowerCase().includes(q));if(!f)throw new Error('PDF não encontrado na pasta atual. O site só enxerga o que ele criou ou o que a pessoa escolheu: peça para clicar em "Escolher PDF" (aba Arquivos).');await openPdf(f.id,f.name);if(pdfN!==f.name)throw new Error('A pessoa cancelou a abertura.');return'Aberto: '+f.name}},
 {name:'numerar_paginas',description:'Numera todas as páginas do PDF. "formato" aceita {n} e {total}.',inputSchema:O({formato:str,posicao:{type:'string',enum:['rodape','topo']},alinhamento:{type:'string',enum:['centro','direita','esquerda']},tamanho:num}),execute:i=>{P();const f=String(i.formato||'Página {n} de {total}'),z=Math.min(36,Math.max(6,+i.tamanho||10));pushH();pages.forEach((pg,k)=>{const s=f.replace('{n}',k+1).replace('{total}',pages.length),w=s.length*z*.5,x=i.alinhamento==='direita'?pg.w-40-w:i.alinhamento==='esquerda'?40:(pg.w-w)/2;objs.push({id:++oid,t:'txt',p:k,x,y:i.posicao==='topo'?28:pg.h-28-z,z,s,f:'Helvetica',b:0,i:0,u:0,c:'#555555'})});paint();vis(curP);return'Numeradas '+pages.length+' páginas'}},
 {name:'marca_dagua',description:'Escreve uma marca d’água (texto grande cinza-claro, centralizado) em todas as páginas.',inputSchema:O({texto:str,tamanho:num,cor:str},['texto']),execute:i=>{P();const s=String(i.texto).slice(0,40),z=Math.min(120,Math.max(20,+i.tamanho||64));pushH();pages.forEach((pg,k)=>objs.push({id:++oid,t:'txt',p:k,x:Math.max(10,(pg.w-s.length*z*.55)/2),y:pg.h/2-z/2,z,s,f:'Helvetica',b:1,i:0,u:0,c:/^#[0-9a-f]{6}$/i.test(i.cor||'')?i.cor:'#d9d9d9'}));paint();vis(curP);return'Marca d’água aplicada em '+pages.length+' páginas'}},
 {name:'transformar_texto',description:'Muda a caixa do texto (maiusculas, minusculas, capitalizar) de um trecho (se informado) ou de uma página/PDF inteiro.',inputSchema:O({modo:{type:'string',enum:['maiusculas','minusculas','capitalizar']},trecho:str,pagina:num},['modo']),execute:i=>{P();const f={maiusculas:s=>s.toUpperCase(),minusculas:s=>s.toLowerCase(),capitalizar:s=>s.toLowerCase().replace(/(^|\s)(\p{L})/gu,(m,a,b)=>a+b.toUpperCase())}[i.modo];if(!f)throw new Error('Modo inválido.');const n0=i.pagina?P(i.pagina):null,tr=i.trecho?String(i.trecho):null;let c=0;pushH();pages.forEach((_,k)=>{if(n0!=null&&k!==n0)return;tis(k).forEach(({e,t})=>{if(tr&&!t.s.includes(tr))return;editItem(t,tr?t.s.split(tr).join(f(tr)):f(t.s));e.remove();c++})});if(!c)throw new Error('Nada para alterar.');paint();vis(n0);return{trechos:c}}},
@@ -394,11 +409,12 @@ $('aiC').onclick=e=>{const b=e.target.closest('button');if(b)aiSend(b.textConten
 $('aiI').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSend()}};
 $('aiS').onclick=()=>aiCtl?aiCtl.abort():aiSend();
 const AK='acervo-ai-cfg';let AC={};try{AC=JSON.parse(localStorage.getItem(AK))||{}}catch(e){}
-$('aMode').value=AC.mode||'local';$('aWeb').checked=!!AC.web;$('aKey').value=AC.key||'';$('aMod').value=AC.model||'claude-sonnet-5-5';$('aUrl').value=AC.url||'';
+if(!AC.mode)AC.mode='api';
+$('aMode').value=AC.mode;$('aWeb').checked=AC.web!==false;$('aKey').value=AC.key||'';$('aMod').value=AC.model||'claude-sonnet-5-5';$('aUrl').value=AC.url||'';$('aPass').value=AC.pass||'';
 const asave=()=>{try{localStorage.setItem(AK,JSON.stringify(AC))}catch(e){}};
-$('aS').onclick=()=>{AC={mode:$('aMode').value,web:$('aWeb').checked,key:$('aKey').value.trim(),model:$('aMod').value.trim()||'claude-sonnet-5-5',url:$('aUrl').value.trim()};asave();toast('IA configurada')};
-$('aW').onclick=()=>{if(confirm('Apagar a chave de IA salva neste navegador?')){localStorage.removeItem(AK);AC={};$('aKey').value='';$('aUrl').value=''}};
-function keyModal(){modal('<h2>🔑 Ligar a IA</h2><p class="hint" style="margin:0 0 8px">Cole sua chave da API da Anthropic (console.anthropic.com → API Keys). Ela fica salva só neste navegador.</p><label>Chave</label><input id="kk" type="password" placeholder="sk-ant-...">',()=>{const v=$('kk').value.trim();if(!/^sk-/.test(v)){toast('Chave inválida');return false}AC.key=v;AC.mode='api';$('aMode').value='api';AC.model=AC.model||'claude-sonnet-5-5';asave();$('aKey').value=v;$('aMod').value=AC.model;toast('Modo Anthropic ligado! Envie sua mensagem de novo.')})}
+$('aS').onclick=()=>{AC={mode:$('aMode').value,web:$('aWeb').checked,key:$('aKey').value.trim(),model:$('aMod').value.trim()||'claude-sonnet-5-5',url:$('aUrl').value.trim(),pass:$('aPass').value.trim()};asave();toast('IA configurada')};
+$('aW').onclick=()=>{if(confirm('Apagar a chave de IA salva neste navegador?')){localStorage.removeItem(AK);AC={mode:'api'};$('aKey').value='';$('aUrl').value='';$('aPass').value=''}};
+function keyModal(){modal('<h2>🔑 Ligar a IA</h2><p class="hint" style="margin:0 0 8px">Cole sua chave da API da Anthropic (console.anthropic.com → API Keys). Ela fica salva só neste navegador.</p><label>Chave</label><input id="kk" type="password" placeholder="sk-ant-...">',()=>{const v=$('kk').value.trim();if(!/^sk-/.test(v)){toast('Chave inválida');return false}AC.key=v;AC.mode='api';$('aMode').value='api';AC.model=AC.model||'claude-sonnet-5-5';asave();$('aKey').value=v;$('aMod').value=AC.model;toast('IA ligada! Envie sua mensagem de novo.')})}
 /* ===== Assistente LOCAL — feito do zero: sem chave, sem internet, roda no navegador ===== */
 const nz=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const STOP=new Set(nz('a o as os de da do das dos e em no na nos nas um uma para por com que qual quais quanto quando como onde se ao é são foi ser tem ter isso este esta esse essa meu minha seu sua pdf documento arquivo me mim eu voce').split(/\s+/));
@@ -408,7 +424,7 @@ function summ(tx,k=4){const ss=tx.split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter
 return ss.map((s,i)=>({s,i,v:nz(s).split(/[^a-z0-9]+/).reduce((a,w)=>a+(fr[w]||0),0)/Math.sqrt(s.split(' ').length)})).sort((a,b)=>b.v-a.v).slice(0,k).sort((a,b)=>a.i-b.i).map(x=>x.s)}
 function qa(q){const ws=nz(q).split(/[^a-z0-9]+/).filter(w=>w.length>2&&!STOP.has(w));if(!ws.length)return[];const out=[];pTxt.forEach((tx,k)=>{const w=(tx||'').split(/\s+/);for(let i=0;i<w.length;i+=12){const s=w.slice(i,i+30).join(' '),z=nz(s),v=ws.filter(x=>z.includes(x)).length;if(v)out.push({s,v,k})}});return out.sort((a,b)=>b.v-a.v).slice(0,3)}
 const call=(n,a)=>AT.find(t=>t.name===n).execute(a||{});
-const HELP='Eu rodo aqui dentro, sem chave. Entendo pedidos como:\n\n📄 PDF\n• resuma · revise e corrija os erros · leia o texto\n• troque "2025" por "2026" · cubra "valor antigo"\n• escreva "Proposta" no topo da página 1 (tamanho 20, negrito)\n• numere as páginas · marca d’água "RASCUNHO" · coloque em maiúsculas\n• gire/exclua/duplique a página 2 · mova a página 4 para 1 · página em branco\n• perguntas sobre o PDF: qual o prazo?\n• desfaça · refaça\n\n📁 Drive\n• crie a pasta do cliente Maria Souza projeto Site\n• liste os arquivos · abra o pdf proposta · salve uma cópia no drive\n\n🌎 Conhecimento\n• quem foi Santos Dumont? · pesquise fotossíntese (Wikipédia)\n• 15% de 2.340 · 100 dólares em reais · cotação do euro · que horas são\n\nPara conversa livre com conhecimento amplo, ligue o motor Anthropic em Configurações.';
+const HELP='Eu rodo aqui dentro, sem chave. Entendo pedidos como:\n\n📄 PDF\n• resuma · revise e corrija os erros · leia o texto\n• troque "2025" por "2026" · cubra "valor antigo"\n• escreva "Proposta" no topo da página 1 (tamanho 20, negrito)\n• numere as páginas · marca d’água "RASCUNHO" · coloque em maiúsculas\n• gire/exclua/duplique a página 2 · mova a página 4 para 1 · página em branco\n• perguntas sobre o PDF: qual o prazo?\n• desfaça · refaça\n\n📁 Drive\n• crie a pasta do cliente Maria Souza projeto Site\n• liste os arquivos · abra o pdf proposta · salve uma cópia no drive\n\n🌎 Conhecimento\n• quem foi Santos Dumont? · pesquise fotossíntese (Wikipédia)\n• 15% de 2.340 · 100 dólares em reais · cotação do euro · que horas são\n\nPara conversa livre com conhecimento amplo, use o motor Anthropic em Configurações.';
 const NOPDF='Abra um PDF primeiro (Arquivo → Abrir PDF, ou "Editar PDF" na aba Arquivos).',NOTXT='Esse PDF não tem texto selecionável (parece escaneado). Posso escrever por cima: peça "escreva ... na página 1".';
 let aiPend=null;
 async function localAI(t){const n=nz(t);
@@ -457,29 +473,46 @@ if(/\b(le|leia|ler|mostr\w*|exib\w*)\b.*\b(texto|conteudo|pdf|documento)\b/.test
 if(isQ){const ws=nz(t).split(/[^a-z0-9]+/).filter(x=>x.length>2&&!STOP.has(x));
  if(pdfB){const r=qa(t);if(/\b(pdf|documento|arquivo|contrato|proposta)\b/.test(n)||(r.length&&r[0].v>=Math.max(2,Math.ceil(ws.length*.6))))return r.length?'Encontrei no PDF:\n'+r.map(x=>'• (pág. '+(x.k+1)+') '+x.s).join('\n'):'Não achei isso no texto do PDF.'}
  const w=/^(?:pesquis\w*|busqu\w*|procur\w*|me\s+fal\w*|fale|explique|explica|defina|defin\w*)\s+(?:sobre\s+|a\s+respeito\s+de\s+|de\s+)?(.+?)\s*[.!?]?$/d.exec(n)||/^(?:quem|o\s+que|oque)\s+(?:e|eh|foi|era|sao|significa|seria)\s+(?:o\s+|a\s+|os\s+|as\s+|um\s+|uma\s+)?(.+?)\s*[.!?]?$/d.exec(n),tp=w?G(w,1):t.replace(/[?!.]+$/,'');
- return rep(()=>call('pesquisar_wikipedia',{consulta:tp}),r=>'📖 '+r.titulo+' (Wikipédia):\n'+r.resumo+'\n'+r.link+'\n\nResumo da Wikipédia; confira a fonte. Para respostas mais elaboradas, ligue o motor Anthropic em Configurações.')}}
+ return rep(()=>call('pesquisar_wikipedia',{consulta:tp}),r=>'📖 '+r.titulo+' (Wikipédia):\n'+r.resumo+'\n'+r.link+'\n\nResumo da Wikipédia; confira a fonte. Para respostas mais elaboradas, use o motor Anthropic em Configurações.')}}
 return'Ainda não entendi esse pedido. Digite "ajuda" para ver o que eu faço, ou escreva de outro jeito (ex.: troque "2025" por "2026").'}
 async function localSend(txt){const b=aiB=aiAdd('a','…');try{b.textContent=await localAI(txt)}catch(e){b.textContent='Não consegui: '+(e.message||e)}finally{aiB=null}}
-async function aiSend(txt){txt=(txt||$('aiI').value).trim();if(!txt||aiCtl)return;
-const lo=AC.mode!=='api';if(!lo&&!AC.key&&!AC.url){keyModal();return}
-$('aiI').value='';$('aiI').style.height='';aiAdd('u',txt);aiStat();
-if(lo)return localSend(txt);
-const user={role:'user',content:'[Contexto: '+(pdfB?'PDF "'+pdfN+'" aberto, '+pages.length+' página(s), página atual '+(curP+1)+(clean?'':', com alterações não salvas'):'nenhum PDF aberto')+'; Drive '+(tok?'conectado, pasta "'+path[path.length-1].name+'"':'não conectado')+']\n'+txt};
-const h=aiTurns.slice(-12);while(h.length&&h[0].role!=='user')h.shift();
-const msgs=[...h,user],b=aiB=aiAdd('a','Pensando…');aiCtl=new AbortController();$('aiS').textContent='Parar';let shown='';
-try{for(let r=0;r<14;r++){
- const res=await fetch(AC.url||'https://api.anthropic.com/v1/messages',{method:'POST',signal:aiCtl.signal,headers:{'content-type':'application/json','anthropic-version':'2023-06-01',...(AC.key?{'x-api-key':AC.key,'anthropic-dangerous-direct-browser-access':'true'}:{})},body:JSON.stringify({model:AC.model||'claude-sonnet-5-5',max_tokens:4096,system:AIR,tools:[...AT.map(t=>({name:t.name,description:t.description,input_schema:t.inputSchema})),...(AC.web?[{type:'web_search_20250305',name:'web_search',max_uses:5}]:[])],messages:msgs})});
- if(!res.ok){const e=new Error((await res.text()).slice(0,300));e.status=res.status;throw e}
- const j=await res.json(),tx=j.content.filter(c=>c.type==='text').map(c=>c.text).join('\n').trim(),us=j.content.filter(c=>c.type==='tool_use');
- if(tx){shown+=(shown?'\n\n':'')+tx;b.textContent=shown}
- msgs.push({role:'assistant',content:j.content});
- if(j.stop_reason==='pause_turn')continue;if(j.stop_reason!=='tool_use'||!us.length)break;
- if(!shown)b.textContent='Trabalhando…';
- const rs=[];for(const u of us){let out,er=false;try{const v=await AT.find(t=>t.name===u.name).execute(u.input);out=typeof v==='string'?v:JSON.stringify(v)}catch(e){out=e.message||String(e);er=true}rs.push({type:'tool_result',tool_use_id:u.id,content:String(out).slice(0,12000),is_error:er})}
- msgs.push({role:'user',content:rs})}
- shown=shown||'Pronto.';b.textContent=shown;aiTurns.push(user,{role:'assistant',content:shown})}
-catch(e){const ab=e.name==='AbortError';b.textContent=ab?(shown||'(interrompido)'):e.status===401?'Chave de API inválida. Confira em Configurações.':e.status===429?'Muitas mensagens seguidas. Espere um pouco.':e.status?'Erro da IA ('+e.status+'): '+e.message:'Não consegui falar com a IA. Verifique a internet e a chave.';if(ab&&shown)aiTurns.push(user,{role:'assistant',content:shown})}
-finally{aiCtl=null;aiB=null;$('aiS').textContent='Enviar'}}
+async function aiSend(txt){
+ txt=(txt||$('aiI').value).trim();if(!txt||aiCtl)return;
+ const lo=AC.mode==='local';
+ if(!lo&&!AC.key&&!AC.url){keyModal();return}
+ $('aiI').value='';$('aiI').style.height='';aiAdd('u',txt);aiStat();
+ if(lo)return localSend(txt);
+ const user={role:'user',content:'[Contexto: '+(pdfB?'PDF "'+pdfN+'" aberto, '+pages.length+' página(s), página atual '+(curP+1)+(clean?'':', com alterações não salvas'):'nenhum PDF aberto')+'; Drive '+(tok?'conectado, pasta "'+path[path.length-1].name+'"':'não conectado')+']\n'+txt};
+ const h=aiTurns.slice(-30);while(h.length&&h[0].role!=='user')h.shift();
+ const msgs=[...h,user],b=aiB=aiAdd('a','Pensando…');aiCtl=new AbortController();$('aiS').textContent='Parar';
+ let shown='',web=AC.web!==false,offline=false;
+ try{for(let r=0;r<20;r++){
+  const tools=[...AT.map(t=>({name:t.name,description:t.description,input_schema:t.inputSchema})),...(web?[{type:'web_search_20250305',name:'web_search',max_uses:5}]:[])];
+  const res=await fetch(AC.url||'https://api.anthropic.com/v1/messages',{method:'POST',signal:aiCtl.signal,
+   headers:{'content-type':'application/json','anthropic-version':'2023-06-01',...(AC.pass?{'x-acesso':AC.pass}:{}),...(AC.key&&!AC.url?{'x-api-key':AC.key,'anthropic-dangerous-direct-browser-access':'true'}:{})},
+   body:JSON.stringify({model:AC.model||'claude-sonnet-5-5',max_tokens:8192,system:AIR,tools,messages:msgs})});
+  if(!res.ok){const et=(await res.text()).slice(0,300);
+   if(res.status===400&&web&&/web.?search/i.test(et)){web=false;AC.web=false;asave();$('aWeb').checked=false;r--;continue}
+   const e=new Error(et);e.status=res.status;throw e}
+  const j=await res.json(),tx=j.content.filter(c=>c.type==='text').map(c=>c.text).join('\n').trim(),us=j.content.filter(c=>c.type==='tool_use');
+  if(tx){shown+=(shown?'\n\n':'')+tx;b.textContent=shown;$('aiSc').scrollTop=1e9}
+  msgs.push({role:'assistant',content:j.content});
+  if(j.stop_reason==='pause_turn')continue;
+  if(j.stop_reason!=='tool_use'||!us.length)break;
+  if(!shown)b.textContent='Trabalhando…';
+  const rs=[];
+  for(const u of us){let out,er=false;
+   try{const v=await AT.find(t=>t.name===u.name).execute(u.input);out=typeof v==='string'?v:JSON.stringify(v)}
+   catch(e){out=e.message||String(e);er=true}
+   rs.push({type:'tool_result',tool_use_id:u.id,content:String(out).slice(0,12000),is_error:er})}
+  msgs.push({role:'user',content:rs})}
+  shown=shown||'Pronto.';b.textContent=shown;aiTurns.push(user,{role:'assistant',content:shown})}
+ catch(e){const ab=e.name==='AbortError';
+  if(!ab&&!e.status){offline=true;b.textContent='Sem conexão com a IA. Tentando o modo local…'}
+  else b.textContent=ab?(shown||'(interrompido)'):e.status===401?'Chave de API (ou senha do proxy) inválida. Confira em Configurações.':e.status===429?'Muitas mensagens seguidas. Espere um pouco.':e.status===402||/credit|billing/i.test(e.message||'')?'Sem crédito na conta da API. Adicione saldo em console.anthropic.com.':'Erro da IA ('+e.status+'): '+e.message;
+  if(ab&&shown)aiTurns.push(user,{role:'assistant',content:shown})}
+ finally{aiCtl=null;aiB=null;$('aiS').textContent='Enviar'}
+ if(offline)return localSend(txt)}
 setTool('edit');aiStat();
 
 </script>
